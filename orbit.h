@@ -1,15 +1,15 @@
-#ifndef ORBIT_H
+п»ї#ifndef ORBIT_H
 #define ORBIT_H
 
 const double Gravy_const = 6.67408 * (10 ^ (-11));
 
 class CPlanet
 {
-	const double m_planet_mass; /// масса планеты
-	const double m_radius;		///радиус планеты
+	const double m_planet_mass; /// РјР°СЃСЃР° РїР»Р°РЅРµС‚С‹
+	const double m_radius;		///СЂР°РґРёСѓСЃ РїР»Р°РЅРµС‚С‹
 public:
-	CPlanet(double planet_mass, ///масса планеты
-		double radius			///радиус планеты
+	CPlanet(double planet_mass, ///РјР°СЃСЃР° РїР»Р°РЅРµС‚С‹
+		double radius			///СЂР°РґРёСѓСЃ РїР»Р°РЅРµС‚С‹
 		);
 
 	const double & GetPlanetMass() { return m_planet_mass; }
@@ -21,12 +21,12 @@ class COrbit
 {
 private:
 	CPlanet m_planet;
-	double m_semi_major_axis;	/// большая полуось
-	double m_eccentricity;		/// эксцентриситет орбиты
-	double m_periapsis;			/// аргумент пергея
-	double m_inclination;		/// наклонение орбиты
-	double m_ascending_nod;		/// долгота восходящего узла
-	double m_mean_anomaly;		/// средняя аномалия
+	double m_semi_major_axis;	/// Р±РѕР»СЊС€Р°В¤ РїРѕР»СѓРѕСЃСЊ
+	double m_eccentricity;		/// СЌРєСЃС†РµРЅС‚СЂРёСЃРёС‚РµС‚ РѕСЂР±РёС‚С‹
+	double m_periapsis;			/// Р°СЂРіСѓРјРµРЅС‚ РїРµСЂРіРµВ¤
+	double m_inclination;		/// РЅР°РєР»РѕРЅРµРЅРёРµ РѕСЂР±РёС‚С‹
+	double m_ascending_nod;		/// РґРѕР»РіРѕС‚Р° РІРѕСЃС…РѕРґВ¤С‰РµРіРѕ СѓР·Р»Р°
+	double m_mean_anomaly;		/// СЃСЂРµРґРЅВ¤В¤ Р°РЅРѕРјР°Р»РёВ¤
 public:
 	COrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity, 
 		double periapsis = 0.0, double inclination = 0.0, double ascending_nod = 0.0, double mean_anomaly = 0.0);
