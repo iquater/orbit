@@ -1,4 +1,4 @@
-BUILD_DIR = ../..
+﻿BUILD_DIR = ../..
 
 CONFIG(debug, debug|release) {
     DESTDIR = $$BUILD_DIR/debug

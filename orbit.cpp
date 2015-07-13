@@ -1,4 +1,4 @@
-#include "orbit.h"
+﻿#include "orbit.h"
 
 CPlanet::CPlanet(double planet_mass, double radius) 
 	: m_planet_mass(planet_mass),
