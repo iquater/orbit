@@ -20,3 +20,8 @@ COrbit::COrbit(double planet_mass, double radius, double semi_major_axis, double
 {
 
 }
+
+int main()
+{
+	return 0;
+}
