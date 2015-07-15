@@ -22,7 +22,7 @@ public:
 	const double & GetPlanetRadius(){ return m_radius; }
 };
 
-class COrbit
+class CEllepticalOrbit
 {
 private:
 	CPlanet m_planet;
@@ -34,13 +34,13 @@ private:
 	double m_mean_anomaly;		/// Mean Anomaly
 	double time;				/// time, that is corresponding to mean_anomaly
 public:
-	COrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity, 
+	CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity,
 		double periapsis = 0.0, double inclination = 0.0, double ascending_nod = 0.0, double mean_anomaly = 0.0);
 private:
 
-	COrbit(const COrbit&);
+	CEllepticalOrbit(const CEllepticalOrbit&);
 
-	COrbit();
+	CEllepticalOrbit();
 
 public:
 	/// return period of orbit
