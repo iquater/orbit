@@ -1,12 +1,17 @@
 ﻿#ifndef ORBIT_H
 #define ORBIT_H
+#define _USE_MATH_DEFINES
+#include <math.h>
 
-const double Gravy_const = 6.67408 * (10 ^ (-11));
-
+const double Gravy_const = 6.67408 * (pow(10.0, -11));
+const double PiConst = M_PI;
 class CPlanet
 {
 	const double m_planet_mass; /// масса планеты
 	const double m_radius;		///радиус планеты
+
+	CPlanet() :m_planet_mass(0), m_radius(0){}
+	CPlanet(const CPlanet&) : m_planet_mass(0), m_radius(0){}
 public:
 	CPlanet(double planet_mass, ///масса планеты
 		double radius			///радиус планеты
@@ -21,12 +26,13 @@ class COrbit
 {
 private:
 	CPlanet m_planet;
-	double m_semi_major_axis;	/// больша¤ полуось
-	double m_eccentricity;		/// эксцентриситет орбиты
-	double m_periapsis;			/// аргумент перге¤
-	double m_inclination;		/// наклонение орбиты
-	double m_ascending_nod;		/// долгота восход¤щего узла
-	double m_mean_anomaly;		/// средн¤¤ аномали¤
+	double m_semi_major_axis;	/// semi major axis, meters
+	double m_eccentricity;		/// eccentricity
+	double m_periapsis;			/// periapsis
+	double m_inclination;		/// orbit inclination
+	double m_ascending_nod;		/// ascending node longitude
+	double m_mean_anomaly;		/// Mean Anomaly
+	double time;				/// time, that is corresponding to mean_anomaly
 public:
 	COrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity, 
 		double periapsis = 0.0, double inclination = 0.0, double ascending_nod = 0.0, double mean_anomaly = 0.0);
@@ -37,10 +43,18 @@ private:
 	COrbit();
 
 public:
-
+	/// return period of orbit
 	double GetPeriod();
 
+	double GetMeanVelocity();
 
+	double GetFocal();
+
+	double GetRadiusAtAnomaly(double anomaly);
+	
+	double EccentricToTrueAnomaly(double eccentric_anomaly);
+
+	double TrueToEccentricAnomaly(double anomaly);
 
 };
 

@@ -1,4 +1,4 @@
-﻿BUILD_DIR = ../..
+#BUILD_DIR = ../..
 
 template = app
 target = orbit
