@@ -51,6 +51,10 @@ public:
 	double GetFocal();
 
 	double GetRadiusAtAnomaly(double anomaly);
+
+	double GetApsis();
+
+	double GetPeriapsis();
 	
 	double EccentricToTrueAnomaly(double eccentric_anomaly);
 

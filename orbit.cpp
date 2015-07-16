@@ -50,8 +50,19 @@ double CEllepticalOrbit::TrueToEccentricAnomaly(double anomaly)
 		(m_eccentricity + cos(anomaly)));
 }
 
+double CEllepticalOrbit::GetApsis()
+{
+	return (1 + m_eccentricity) * m_semi_major_axis;
+}
+
+double CEllepticalOrbit::GetPeriapsis()
+{
+	return (1 - m_eccentricity) * m_semi_major_axis;
+}
+
 int main()
 {
+	//first Earth mass, second mean Earth radius
 	CEllepticalOrbit orbit(5.97219 * pow(10.0, 24.0), 6380000, 42164000, 0.1);
 	double t = orbit.GetPeriod();
 	double v = orbit.GetMeanVelocity(); 
