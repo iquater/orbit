@@ -12,7 +12,7 @@ CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, double sem
 	m_eccentricity(eccentricity),
 	m_periapsis(periapsis),
 	m_inclination(inclination),
-	m_ascending_nod(ascending_node),
+	m_ascending_node(ascending_node),
 	m_mean_anomaly(mean_anomaly)
 
 {}
@@ -59,7 +59,25 @@ double CEllepticalOrbit::GetPeriapsis()
 {
 	return (1 - m_eccentricity) * m_semi_major_axis;
 }
+double CEllepticalOrbit::GetEccentricity()
+{
+	return m_eccentricity;
+}
 
+double CEllepticalOrbit::GetInclination()
+{
+	return m_inclination;
+}
+
+double CEllepticalOrbit::GetAscendingNode()
+{
+	return m_ascending_node;
+}
+
+double CEllepticalOrbit::GetSemiMajorAxis()
+{
+	return m_ascending_node;
+}
 int main()
 {
 	//first Earth mass, second mean Earth radius

@@ -30,7 +30,7 @@ private:
 	double m_eccentricity;		/// eccentricity
 	double m_periapsis;			/// periapsis
 	double m_inclination;		/// orbit inclination
-	double m_ascending_nod;		/// ascending node longitude
+	double m_ascending_node;	/// ascending node longitude
 	double m_mean_anomaly;		/// Mean Anomaly
 	double time;				/// time, that is corresponding to mean_anomaly
 public:
@@ -55,6 +55,14 @@ public:
 	double GetApsis();
 
 	double GetPeriapsis();
+
+	double GetEccentricity();
+
+	double GetInclination();
+
+	double GetAscendingNode();
+
+	double GetSemiMajorAxis();
 	
 	double EccentricToTrueAnomaly(double eccentric_anomaly);
 
