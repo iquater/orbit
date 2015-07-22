@@ -2,20 +2,46 @@
 
 CPlanet::CPlanet(double planet_mass, double radius) 
 	: m_planet_mass(planet_mass),
-	m_radius(radius)
+	m_radius(radius),
+	m_min_height(0)
 {}
 
-CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity, double periapsis,
+CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity, double periapsis_ang,
 	double inclination, double ascending_node, double mean_anomaly) 
 	:m_planet(planet_mass, radius),
 	m_semi_major_axis(semi_major_axis),
 	m_eccentricity(eccentricity),
-	m_periapsis(periapsis),
+	m_periapsis_ang(periapsis_ang),
 	m_inclination(inclination),
 	m_ascending_node(ascending_node),
 	m_mean_anomaly(mean_anomaly)
 
-{}
+{
+
+}
+
+CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, long int periapsis, long int apsis,
+		double periapsis_ang, double inclination, double ascending_node, double mean_anomaly)
+	:m_planet(planet_mass, radius),
+	m_semi_major_axis(periapsis + apsis),
+	m_eccentricity( 0),
+	m_periapsis_ang(periapsis_ang),
+	m_inclination(inclination),
+	m_ascending_node(ascending_node),
+	m_mean_anomaly(mean_anomaly)
+{
+	if ( periapsis > apsis )
+	{
+		double tmp;
+		tmp = apsis;
+		apsis = periapsis;
+		periapsis = tmp;
+	}
+	else if (periapsis == apsis) 
+		m_eccentricity = 0;
+
+	m_eccentricity = sqrt ( 1 - double((periapsis * periapsis)) / double((apsis * apsis)) );
+}
 
 
 double CEllepticalOrbit::GetPeriod()
@@ -81,7 +107,11 @@ double CEllepticalOrbit::GetSemiMajorAxis()
 int main()
 {
 	//first Earth mass, second mean Earth radius
-	CEllepticalOrbit orbit(5.97219 * pow(10.0, 24.0), 6380000, 42164000, 0.1);
+	//CEllepticalOrbit orbit(5.97219 * pow(10.0, 24.0), 6380000, 42164000, 0.1);
+	CEllepticalOrbit orbit(5.97219 * pow(10.0, 24.0), 6380000.0, 7800000.0, 0.1);
+	CEllepticalOrbit orbit2(5.97219 * pow(10.0, 24.0), 6380000, 7800000, 0.2);
+	double a1 = orbit.GetApsis(), a2 = orbit2.GetApsis();
+	double p1 = orbit.GetPeriapsis(), p2 = orbit2.GetPeriapsis();
 	double t = orbit.GetPeriod();
 	double v = orbit.GetMeanVelocity(); 
 	return 0;

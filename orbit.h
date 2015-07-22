@@ -10,8 +10,10 @@ class CPlanet
 	const double m_planet_mass; /// масса планеты
 	const double m_radius;		///радиус планеты
 
-	CPlanet() :m_planet_mass(0), m_radius(0){}
-	CPlanet(const CPlanet&) : m_planet_mass(0), m_radius(0){}
+	double m_min_height;
+
+	CPlanet() :m_planet_mass(0), m_radius(0),m_min_height(0){}
+	CPlanet(const CPlanet&) : m_planet_mass(0), m_radius(0), m_min_height(0){}
 public:
 	CPlanet(double planet_mass, ///масса планеты
 		double radius			///радиус планеты
@@ -20,6 +22,13 @@ public:
 	const double & GetPlanetMass() { return m_planet_mass; }
 
 	const double & GetPlanetRadius(){ return m_radius; }
+
+	const double & GetMinHeight(){ return m_min_height; }
+
+	void SetMinHeight(double height) { m_min_height = height; }
+
+
+
 };
 
 class CEllepticalOrbit
@@ -28,14 +37,20 @@ private:
 	CPlanet m_planet;
 	double m_semi_major_axis;	/// semi major axis, meters
 	double m_eccentricity;		/// eccentricity
-	double m_periapsis;			/// periapsis
+	double m_periapsis_ang;		/// periapsis
 	double m_inclination;		/// orbit inclination
 	double m_ascending_node;	/// ascending node longitude
 	double m_mean_anomaly;		/// Mean Anomaly
 	double time;				/// time, that is corresponding to mean_anomaly
 public:
+	/// constructor with semi_major_axis & eccentricity
 	CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity,
-		double periapsis = 0.0, double inclination = 0.0, double ascending_nod = 0.0, double mean_anomaly = 0.0);
+		double periapsis_ang = 0.0, double inclination = 0.0, double ascending_node = 0.0, double mean_anomaly = 0.0);
+
+	/// constructor with apsis & periapsis
+	/// problems with constructor override - that's why i'm using long int.
+	CEllepticalOrbit(double planet_mass, double radius, long int periapsis, long int apsis,
+		double periapsis_ang = 0.0, double inclination = 0.0, double ascending_node = 0.0, double mean_anomaly = 0.0);
 private:
 
 	CEllepticalOrbit(const CEllepticalOrbit&);
