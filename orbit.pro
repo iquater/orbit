@@ -3,11 +3,12 @@
 template = app
 target = orbit
 
+INCLUDEPATH += orbit_types/ \
+  maneuver/ \
 
+HEADERS += orbit_types/orbit.h \
+  maneuver/maneuver.h \
 
-HEADERS += orbit.h \
-  maneuver.h \
-
-SOURCES += orbit.cpp \
-  maneuver.cpp \
+SOURCES += orbit_types/orbit.cpp \
+  maneuver/maneuver.cpp \
 
