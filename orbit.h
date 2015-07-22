@@ -41,7 +41,7 @@ private:
 	double m_inclination;		/// orbit inclination
 	double m_ascending_node;	/// ascending node longitude
 	double m_mean_anomaly;		/// Mean Anomaly
-	double time;				/// time, that is corresponding to mean_anomaly
+	double time;				/// time, that is corresponding mean_anomaly
 public:
 	/// constructor with semi_major_axis & eccentricity
 	CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity,
