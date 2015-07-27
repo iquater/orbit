@@ -1,5 +1,6 @@
 ﻿#include "orbit.h"
-
+#include <stdlib.h>
+#include <vector>
 CPlanet::CPlanet(double planet_mass, double radius) 
 	: m_planet_mass(planet_mass),
 	m_radius(radius),
@@ -103,6 +104,15 @@ double CEllepticalOrbit::GetAscendingNode()
 double CEllepticalOrbit::GetSemiMajorAxis()
 {
 	return m_ascending_node;
+}
+
+
+void increaseApsis(CEllepticalOrbit * orbit, int new_apsis)
+{
+	double f = 200;
+	//std::vector<CEllepticalOrbit *> transformation;
+
+	
 }
 int main()
 {
