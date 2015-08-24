@@ -2,6 +2,7 @@
 #define UTILITES_H
 #include "constants.h"
 #include <assert.h>
+#include "orbit.h"
 namespace utilites
 {
 	const size_t MAX_ITERATIONS = 100;
@@ -9,6 +10,7 @@ namespace utilites
 
 	/**
 	 * @brief ConvertMeanToEccentric
+	 * преобразование средней аномалии в эксцентрическую
 	 * источник http://murison.alpheratz.net/dynamics/twobody/KeplerIterations_summary.pdf
 	 * версия на python ( и автор реализации) https://github.com/RazerM/orbital
 	 */
@@ -24,6 +26,7 @@ namespace utilites
 
 	double ConvertTrueFromMean(double mean_anomaly, double eccentricity);
 
+	void DebugPrintOrbit( CEllepticalOrbit&);
 }
 
 

@@ -1,5 +1,6 @@
 #include "utilites.h"
-
+#include <qdebug.h>
+#include <qstring.h>
 using namespace utilites;
 
 namespace utilites
@@ -59,4 +60,12 @@ namespace utilites
 		return ConvertTrueFromEccentric(ea, e);
 	}
 
+	void DebugPrintOrbit( CEllepticalOrbit& orbit)
+	{
+		qDebug() << "Orbit Paramaters:";
+		qDebug() << QString("semi-major axis %1").arg( orbit.GetSemiMajorAxis() );
+		qDebug() << QString("Eccentricity %1").arg(orbit.GetEccentricity());
+		qDebug() << QString("Periapsis %1").arg(orbit.GetPeriapsis());
+		qDebug() << QString("Apsis %1").arg(orbit.GetApsis());
+	}
 }

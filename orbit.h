@@ -19,17 +19,17 @@ private:
 	double m_ascending_node;	/// ascending node longitude
 	double m_mean_anomaly;		/// Mean Anomaly
 	double m_anomaly;			/// True Anomaly
-	double m_periapsis;
-	double m_apsis;
+	double m_periapsis;			/// periapsis
+	double m_apsis;				/// apsis
 	double time;				/// time, that is corresponding mean_anomaly or True anomaly
 public:
 	/// constructor with semi_major_axis & eccentricity
-	CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity,
+	CEllepticalOrbit(double planet_mass, int radius, double semi_major_axis, double eccentricity,
 		double periapsis_ang = 0.0, double inclination = 0.0, double ascending_node = 0.0, double mean_anomaly = 0.0);
 
 	/// constructor with apsis & periapsis
 	/// problems with constructor override - that's why i'm using long int.
-	CEllepticalOrbit(double planet_mass, double radius, long int periapsis, long int apsis,
+	CEllepticalOrbit(double planet_mass, int radius, int periapsis, int apsis,
 		double periapsis_ang = 0.0, double inclination = 0.0, double ascending_node = 0.0, double mean_anomaly = 0.0);
 private:
 
@@ -38,7 +38,6 @@ private:
 	CEllepticalOrbit();
 
 public:
-	/// return period of orbit
 	double GetPeriod();
 
 	double GetMeanVelocity();
@@ -60,11 +59,6 @@ public:
 	double GetAscendingNode();
 
 	double GetSemiMajorAxis();
-	
-	double EccentricToTrueAnomaly(double eccentric_anomaly);
-
-	double TrueToEccentricAnomaly(double anomaly);
-
 };
 
 

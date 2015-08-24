@@ -1,6 +1,6 @@
 #include "body.h"
 
-CBody::CBody(double planet_mass, double radius)
+CBody::CBody(double planet_mass, int radius)
 	: m_planet_mass(planet_mass),
 	m_radius(radius),
 	m_min_height(0)

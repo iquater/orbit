@@ -3,7 +3,7 @@
 #include <vector>
 #include "constants.h"
 
-CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, double semi_major_axis, double eccentricity, double periapsis_ang,
+CEllepticalOrbit::CEllepticalOrbit(double planet_mass, int radius, double semi_major_axis, double eccentricity, double periapsis_ang,
 	double inclination, double ascending_node, double mean_anomaly) 
 	:m_planet(planet_mass, radius),
 	m_semi_major_axis(semi_major_axis),
@@ -20,15 +20,18 @@ CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, double sem
 
 }
 
-CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, long int periapsis, long int apsis,
+CEllepticalOrbit::CEllepticalOrbit(double planet_mass, int radius, int periapsis, int apsis,
 		double periapsis_ang, double inclination, double ascending_node, double mean_anomaly)
 	:m_planet(planet_mass, radius),
-	m_semi_major_axis(periapsis + apsis),
+	m_semi_major_axis((periapsis + apsis) / 2),
 	m_eccentricity( 0),
 	m_periapsis_ang(periapsis_ang),
 	m_inclination(inclination),
 	m_ascending_node(ascending_node),
-	m_mean_anomaly(mean_anomaly)
+	m_mean_anomaly(mean_anomaly),
+	m_anomaly(0),
+	m_periapsis(periapsis),
+	m_apsis(apsis)
 {
 	if ( periapsis > apsis )
 	{
@@ -40,7 +43,14 @@ CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double radius, long int p
 	else if (periapsis == apsis) 
 		m_eccentricity = 0;
 
-	m_eccentricity = sqrt ( 1 - double((periapsis * periapsis)) / double((apsis * apsis)) );
+	periapsis /= 1000;
+	apsis /= 1000;
+
+	double semi_major_axis = m_semi_major_axis / 1000;
+
+	double ea = apsis / semi_major_axis - 1;
+
+	m_eccentricity = ea;
 }
 
 
@@ -61,25 +71,11 @@ double CEllepticalOrbit::GetFocal()
 
 void CEllepticalOrbit::SetFocal(double focal)
 {
-	// p = a * ( 1 - e * e)
-	//т.к. a
 	m_semi_major_axis = focal / (1 - pow(m_eccentricity, 2));
 }
 double CEllepticalOrbit::GetRadiusAtAnomaly(double anomaly)
 {
 	return GetFocal() / (1 + m_eccentricity * cos(anomaly));
-}
-
-double CEllepticalOrbit::EccentricToTrueAnomaly(double eccentric_anomaly)
-{
-	return atan2(sqrt(1 - m_eccentricity) * cos(eccentric_anomaly / 2),
-		sqrt(1 + m_eccentricity) * sin(eccentric_anomaly / 2));
-}
-
-double CEllepticalOrbit::TrueToEccentricAnomaly(double anomaly)
-{
-	return atan(sqrt(1 - pow(m_eccentricity, 2)) * sin(anomaly) /
-		(m_eccentricity + cos(anomaly)));
 }
 
 double CEllepticalOrbit::GetApsis()
@@ -108,7 +104,7 @@ double CEllepticalOrbit::GetAscendingNode()
 
 double CEllepticalOrbit::GetSemiMajorAxis()
 {
-	return m_ascending_node;
+	return m_semi_major_axis;
 }
 
 
@@ -238,16 +234,4 @@ void fa()
 		double p1 = orbit.GetEccentricity() + step * dif_ecc(anomaly, 0, 100, &orbit);
 	
 	}
-}
-int main()
-{
-	//first Earth mass, second mean Earth radius
-	//CEllepticalOrbit orbit(5.97219 * pow(10.0, 24.0), 6380000, 42164000, 0.1);
-	CEllepticalOrbit orbit(5.97219 * pow(10.0, 24.0), 6380000.0, 7800000.0, 0.1);
-	CEllepticalOrbit orbit2(5.97219 * pow(10.0, 24.0), 6380000, 7800000, 0.2);
-	double a1 = orbit.GetApsis(), a2 = orbit2.GetApsis();
-	double p1 = orbit.GetPeriapsis(), p2 = orbit2.GetPeriapsis();
-	double t = orbit.GetPeriod();
-	double v = orbit.GetMeanVelocity(); 
-	return 0;
 }

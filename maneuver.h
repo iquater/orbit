@@ -2,8 +2,7 @@
 #define MANEUVER_H
 #include "orbit.h"
 
-
-enum maneuver_cases
+/*enum maneuver_cases
 {
 	maneuver_complanar_increase_periapsis = 1,
 	maneuver_complanar_increase_apsis = 2,
@@ -27,8 +26,7 @@ public:
 	CManeuver(CEllepticalOrbit* _initial_orbit,
 		CEllepticalOrbit* _target_orbit);
 
-	void getTrajectory();
 
 	
-};
+};*/
 #endif // !MANEUVER_H
