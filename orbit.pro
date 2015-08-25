@@ -16,4 +16,5 @@ SOURCES += orbit.cpp \
   maneuver.cpp \
   body.cpp \
   utilites.cpp \
+  example.cpp \
 

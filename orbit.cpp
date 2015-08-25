@@ -107,6 +107,11 @@ double CEllepticalOrbit::GetSemiMajorAxis()
 	return m_semi_major_axis;
 }
 
+double CEllepticalOrbit::GetPeriapsisAng()
+{
+	return m_periapsis_ang;
+}
+
 
 void increaseApsis(CEllepticalOrbit * orbit, int new_apsis)
 {
@@ -116,107 +121,10 @@ void increaseApsis(CEllepticalOrbit * orbit, int new_apsis)
 	
 }
 
-double dif_ecc(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
-{
-	double result = 0;
-	/// de/dt:
-	double a = engine_force * sqrt(orbit->GetFocal() / EarthGravy);
-	double b = sin(anomaly)* cos(engine_direction);
-	double c = orbit->GetEccentricity() * cos(anomaly) * cos(anomaly) + 2 * cos(anomaly) + orbit->GetEccentricity();
-	double d = 1 + orbit->GetEccentricity()*cos(anomaly);
-	double e = sin(engine_direction);
 
-	result = a * (b + c * e / d);
+#include "utilites.h"
+using namespace utilites;
 
-	return result;
-}
-
-double dif_focal(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
-{
-	double result = 0;
-	/// dp/dt:
-
-	double a = 2 * engine_force * orbit->GetFocal();
-	double b = 1 + orbit->GetEccentricity() * cos(anomaly);
-	double c = sqrt(orbit->GetFocal() / EarthGravy) * sin(engine_direction);
-
-	result = a * c / b;
-
-	return result;
-}
-
-double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
-{
-	double result = 0;
-	/// dw/dt:	
-
-	double a = engine_force / orbit->GetEccentricity() * sqrt(orbit->GetFocal() / EarthGravy);
-	double b = cos(anomaly) * cos(engine_direction);
-	double c = (2 + orbit->GetEccentricity() * cos(anomaly)) * sin(anomaly);
-	double d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
-
-	result = a * (-b + c * d);
-
-	return result;
-}
-
-double dif_periapsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
-{
-	double result = 0;
-	/// dperiapsis/dt:	
-	double a = engine_force * orbit->GetFocal()  * sqrt(orbit->GetFocal() / EarthGravy);
-	double b = 1 + orbit->GetEccentricity() * orbit->GetEccentricity();
-	double c = sin(anomaly) * cos(engine_direction);
-	double d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
-	double e = 2 * (1 - cos(anomaly)) + orbit->GetEccentricity() * sin(anomaly) * sin(anomaly);
-
-	result = a / b *(-c - e * d);
-
-	return result;
-}
-
-double dif_apsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
-{
-	double result = 0;
-	/// dperiapsis/dt:	
-	double a = engine_force * orbit->GetFocal()  * sqrt(orbit->GetFocal() / EarthGravy);
-	double b = 1 - orbit->GetEccentricity() * orbit->GetEccentricity();
-	double c = sin(anomaly) * cos(engine_direction);
-	double d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
-	double e = 2 * (1 + cos(anomaly)) - orbit->GetEccentricity() * sin(anomaly) * sin(anomaly);
-
-	result = a / b *(c - e * d);
-
-	return result;
-}
-
-double dif_tetta(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
-{
-	double result = 0;
-	double r = (orbit->GetFocal() / (1 + orbit->GetEccentricity() * cos(anomaly)));
-	double a = sqrt(EarthGravy * orbit->GetFocal()) /
-		pow(r , 2);
-
-	double b = engine_force * cos(anomaly) / orbit->GetEccentricity();
-	double c = sqrt(orbit->GetFocal() / EarthGravy) * cos(engine_direction);
-	double d = engine_direction * sin(anomaly) / orbit->GetEccentricity() * (1 + r / orbit->GetFocal());
-	double f = sqrt(orbit->GetFocal() / EarthGravy) * sin(engine_direction);
-
-	result = a + b * c - d * f;
-
-
-	return result;
-}
-typedef double(*Elements_f)(double, double, double, CEllepticalOrbit *);
-Elements_f dif_motion[] = //система дифференциальных уравнений
-{ 
-	dif_ecc, 
-	dif_focal, 
-	dif_periapsis_arg, 
-	dif_periapsis, 
-	dif_apsis, 
-	dif_tetta 
-};
 void fa()
 {
 	//задаем начальную орбиту

@@ -59,6 +59,8 @@ public:
 	double GetAscendingNode();
 
 	double GetSemiMajorAxis();
+
+	double GetPeriapsisAng();
 };
 
 

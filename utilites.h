@@ -26,6 +26,32 @@ namespace utilites
 
 	double ConvertTrueFromMean(double mean_anomaly, double eccentricity);
 
+
+	/** семейство функций dif_ - оскулирующие элементы орбиты */
+	double dif_ecc(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+
+	double dif_focal(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+
+	double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+
+	double dif_periapsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+
+	double dif_apsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+
+	double dif_tetta(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+
+	typedef double(*Elements_f)(double, double, double, CEllepticalOrbit *);
+
+	/*Elements_f dif_motion[] = //система дифференциальных уравнений
+	{ 
+		dif_ecc, 
+		dif_focal, 
+		dif_periapsis_arg, 
+		dif_periapsis, 
+		dif_apsis, 
+		dif_tetta 
+	};*/
+
 	void DebugPrintOrbit( CEllepticalOrbit&);
 }
 
