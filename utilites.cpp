@@ -73,7 +73,6 @@ namespace utilites
 	{
 		double result = 0;
 		/// de/dt:
-		double t = orbit->GetFocal() / EarthGravy;
 		double a = engine_force * sqrt(orbit->GetFocal() / EarthGravy);
 		double b = sin(anomaly)* cos(engine_direction);
 		double c = orbit->GetEccentricity() * cos(anomaly) * cos(anomaly) + 2 * cos(anomaly) + orbit->GetEccentricity();
@@ -103,11 +102,11 @@ namespace utilites
 	{
 		double result = 0;
 		/// dw/dt:	
-
-		double a = engine_force / orbit->GetEccentricity() * sqrt(orbit->GetFocal() / EarthGravy);
-		double b = cos(anomaly) * cos(engine_direction);
-		double c = (2 + orbit->GetEccentricity() * cos(anomaly)) * sin(anomaly);
-		double d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
+		double a =0, b = 0, c = 0, d = 0;
+		a = engine_force / orbit->GetEccentricity() * sqrt(orbit->GetFocal() / EarthGravy);
+		b = cos(anomaly) * cos(engine_direction);
+		c = (2 + orbit->GetEccentricity() * cos(anomaly)) * sin(anomaly);
+		d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
 
 		result = a * (-b + c * d);
 

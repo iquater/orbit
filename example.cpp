@@ -66,12 +66,11 @@ int main ()
 	history.push_back(init_step);
 
 	step prev = init_step;
-	double force = 2000, step_i = 0.0001, direction = PiConst/2;
+	double force = 10, step_i = 0.0001, direction = PiConst/2;
 	while (fabs(prev.apsis/1000 - target_orbit->GetApsis()/1000) > 0.1)
 	{
 		step curr;
 		CEllepticalOrbit temp(EarthGravy, 6400000, (int)prev.periapsis, (int)prev.apsis, prev.periapsis_angle);
-
 		curr.eccentricity = prev.eccentricity + step_i * dif_ecc(prev.true_anomaly, direction, force, &temp);
 		curr.focal = prev.focal + step_i * dif_focal(prev.true_anomaly, direction, force, &temp);
 		curr.periapsis_angle = prev.periapsis_angle + step_i * dif_periapsis_arg(prev.true_anomaly, direction, force, &temp);

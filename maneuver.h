@@ -1,32 +1,66 @@
 #ifndef MANEUVER_H
 #define MANEUVER_H
 #include "orbit.h"
+#include <stdlib.h>
+#include <vector>
+//#include <memory>
 
-/*enum maneuver_cases
+using namespace std;
+
+
+namespace maneuver
 {
-	maneuver_complanar_increase_periapsis = 1,
-	maneuver_complanar_increase_apsis = 2,
-	maneuver_complanar_increase_apsis_and_periapsis = 3,
-};
-class CProfile
-{
+	enum maneuver_type
+	{
 
-};
+	};
 
-class CManeuver
-{
-	CEllepticalOrbit* initial_orbit;
-	CEllepticalOrbit* target_orbit;
+	//typedef shared_ptr<IOperation> Operation;
 
-	CManeuver(){}
-	CManeuver(const CManeuver&){}
-	
-	bool isComplanar();
-public:
-	CManeuver(CEllepticalOrbit* _initial_orbit,
-		CEllepticalOrbit* _target_orbit);
+	class IOperation
+	{
+	public:
+		virtual ~IOperation(){};
+	};
+
+	class CSetApsis: public IOperation
+	{
+	public:
+		CSetApsis(double apsis,const CEllepticalOrbit& orbit);
+	};
+
+	class CSetPeriapsis: public IOperation
+	{
+	public:
+		CSetPeriapsis(double periapsis,const CEllepticalOrbit& orbit);
+	};
+
+	class CSetRound: public IOperation
+	{
+	public:
+		CSetRound(const CEllepticalOrbit& orbit);
+	};
+
+	class CSetEccentricity: public IOperation
+	{
+	public:
+		CSetEccentricity(double ecc,const CEllepticalOrbit& orbit);
+	};
+
+	class CSetInclination
+	{
+	public:
+		CSetInclination(double inclination,const CEllepticalOrbit& orbit);
+	};
+
+	typedef std::vector<IOperation* > operations_t;
+
+	struct SManeuver
+	{
+		operations_t operations;
+	};
 
 
-	
-};*/
+}
+
 #endif // !MANEUVER_H
