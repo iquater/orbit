@@ -40,6 +40,17 @@ namespace utilites
 
 	double dif_tetta(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
+	/** проекции ускарения */
+	double dif_ecc_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
+
+	double dif_focal_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
+
+	double dif_pericenter_ang_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
+
+	double dif_tetta_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
+
+	double dif_sigma_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
+
 	/**
 	 * @brief приращение скорости для изменения высоты апоцентра
 	 * прикладывается в перицентре

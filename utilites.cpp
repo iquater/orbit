@@ -98,67 +98,66 @@ namespace utilites
 		return result;
 	}
 
-	/*double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit)
 	{
 		double result = 0;
 		/// dw/dt:	
 		double a =0, b = 0, c = 0, d = 0;
-		a = engine_force / orbit->GetEccentricity() * sqrt(orbit->GetFocal() / EarthGravy);
+		a = engine_force / orbit->eccentricity * sqrt(orbit->focal / EarthGravy);
 		b = cos(anomaly) * cos(engine_direction);
-		c = (2 + orbit->GetEccentricity() * cos(anomaly)) * sin(anomaly);
-		d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
+		c = (2 + orbit->eccentricity * cos(anomaly)) * sin(anomaly);
+		d = sin(engine_direction) / (1 + orbit->eccentricity * cos(anomaly));
 
 		result = a * (-b + c * d);
 
 		return result;
 	}
 
-	double dif_periapsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	double dif_periapsis(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit)
 	{
 		double result = 0;
 		/// dperiapsis/dt:	
-		double a = engine_force * orbit->GetFocal()  * sqrt(orbit->GetFocal() / EarthGravy);
-		double b = 1 + orbit->GetEccentricity() * orbit->GetEccentricity();
+		double a = engine_force * orbit->focal  * sqrt(orbit->focal / EarthGravy);
+		double b = 1 + orbit->eccentricity * orbit->eccentricity;
 		double c = sin(anomaly) * cos(engine_direction);
-		double d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
-		double e = 2 * (1 - cos(anomaly)) + orbit->GetEccentricity() * sin(anomaly) * sin(anomaly);
+		double d = sin(engine_direction) / (1 + orbit->eccentricity * cos(anomaly));
+		double e = 2 * (1 - cos(anomaly)) + orbit->eccentricity * sin(anomaly) * sin(anomaly);
 
 		result = a / b *(-c - e * d);
 
 		return result;
 	}
 
-	double dif_apsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	double dif_apsis(double anomaly, double engine_direction, double engine_force, kepler_orbit * orbit)
 	{
 		double result = 0;
-		/// dperiapsis/dt:	
-		double a = engine_force * orbit->GetFocal()  * sqrt(orbit->GetFocal() / EarthGravy);
-		double b = 1 - orbit->GetEccentricity() * orbit->GetEccentricity();
+
+		double a = engine_force * orbit->focal  * sqrt(orbit->focal / EarthGravy);
+		double b = 1 - orbit->eccentricity * orbit->eccentricity;
 		double c = sin(anomaly) * cos(engine_direction);
-		double d = sin(engine_direction) / (1 + orbit->GetEccentricity() * cos(anomaly));
-		double e = 2 * (1 + cos(anomaly)) - orbit->GetEccentricity() * sin(anomaly) * sin(anomaly);
+		double d = sin(engine_direction) / (1 + orbit->eccentricity * cos(anomaly));
+		double e = 2 * (1 + cos(anomaly)) - orbit->eccentricity * sin(anomaly) * sin(anomaly);
 
 		result = a / b *(c - e * d);
 
 		return result;
 	}
-	double dif_tetta(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	double dif_tetta(double anomaly, double engine_direction, double engine_force, kepler_orbit * orbit)
 	{
 		double result = 0;
-		double r = (orbit->GetFocal() / (1 + orbit->GetEccentricity() * cos(anomaly)));
-		double a = sqrt(EarthGravy * orbit->GetFocal()) /
-			pow(r , 2);
+		double r = (orbit->focal / (1 + orbit->eccentricity * cos(anomaly)));
+		double a = sqrt(EarthGravy * orbit->focal) /
+			(r * r);
 
-		double b = engine_force * cos(anomaly) / orbit->GetEccentricity();
-		double c = sqrt(orbit->GetFocal() / EarthGravy) * cos(engine_direction);
-		double d = engine_direction * sin(anomaly) / orbit->GetEccentricity() * (1 + r / orbit->GetFocal());
-		double f = sqrt(orbit->GetFocal() / EarthGravy) * sin(engine_direction);
+		double b = engine_force * cos(anomaly) / orbit->eccentricity;
+		double c = sqrt(orbit->focal / EarthGravy) * cos(engine_direction);
+		double d = engine_direction * sin(anomaly) / orbit->eccentricity * (1 + r / orbit->focal);
+		double f = sqrt(orbit->focal / EarthGravy) * sin(engine_direction);
 
 		result = a + b * c - d * f;
 
-
 		return result;
-	}*/
+	}
 
 	double velocity_raise_apo(kepler_orbit* orb, double new_apocenter, const double gravy )
 	{
@@ -181,4 +180,72 @@ namespace utilites
 		return result;
 	}
 
+
+	double dif_ecc_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit)
+	{
+		double result;
+
+		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
+
+		double a = sqrt(orbit->focal / EarthGravy);
+		double b = acc_r * sin(anomaly) + acc_n  * orbit->eccentricity * r / orbit->focal +
+			acc_n * (1 + r / orbit->focal)*cos(anomaly);
+
+		result = a * b;
+
+		return result;
+	
+	}
+
+	double dif_focal_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit)
+	{
+		double result;
+
+		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
+
+		result = 2 * acc_n * r * sqrt(orbit->focal / EarthGravy);
+
+		return result;
+	}
+
+	double dif_pericenter_ang_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit)
+	{
+		double result;
+
+		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
+
+		double a = sqrt(orbit->focal / EarthGravy) / orbit->eccentricity;
+
+		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // здесь не хватает части по наклонению
+
+		result = a + b;
+
+		return result;
+	}
+
+	double dif_tetta_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit)
+	{
+		double result;
+
+		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
+
+		result = sqrt(EarthGravy * orbit->focal) / (r*r) - dif_sigma_proj(anomaly, acc_r, acc_n, orbit);
+
+		return result;
+	}
+
+	double dif_sigma_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit)
+	{
+		double result;
+
+		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
+
+		double a = sqrt(orbit->focal / EarthGravy) / orbit->eccentricity;
+
+		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // здесь не хватает части по наклонению
+
+		result = a * b;
+
+		return result;
+	}
 }

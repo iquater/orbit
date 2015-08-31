@@ -25,6 +25,8 @@ namespace maneuver
 
 	class CSetApsis: public IOperation
 	{
+		double m_apsis;
+		double delta_v;
 	public:
 		CSetApsis(double apsis,const CEllepticalOrbit& orbit);
 	};
