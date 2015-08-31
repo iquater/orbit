@@ -5,7 +5,7 @@
 #include <vector>
 using namespace utilites;
 
-Elements_f dif_motion[] = //система дифференциальных уравнений
+/*Elements_f dif_motion[] = //система дифференциальных уравнений
 { 
 	dif_ecc, 
 	dif_focal, 
@@ -33,12 +33,25 @@ struct step
 		true_anomaly(0) {}
 };
 
-typedef std::vector<step> history_t;
+typedef std::vector<step> history_t;*/
 
 int main ()
 {
-	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400000, 7200000, 7600000);
-	utilites::DebugPrintOrbit(*orbit);
+	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 7600);
+	CEllepticalOrbit * target_orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 10000);
+
+	kepler_orbit ko = orbit->GetKeplerOrbitFormat();
+	kepler_orbit nko = target_orbit->GetKeplerOrbitFormat();
+
+	kepler_orbit new_co;
+	new_co.eccentricity = ko.eccentricity +  dif_ecc(0, PiConst / 2, 200, &ko);
+	new_co.focal = ko.focal + dif_focal(0, PiConst / 2, 200, &ko );
+
+	double t = velocity_raise_apo(&ko, 10000000);
+
+
+	double nvn = sqrt(EarthGravy/nko.focal * (1 + nko.eccentricity * cos(PiConst)) );
+	/*utilites::DebugPrintOrbit(*orbit);
 	CEllepticalOrbit* target_orbit = new CEllepticalOrbit(EarthMass, 6400000, 7200000, 7800000);
 	utilites::DebugPrintOrbit(*target_orbit);
 
@@ -66,20 +79,20 @@ int main ()
 	history.push_back(init_step);
 
 	step prev = init_step;
-	double force = 10, step_i = 0.0001, direction = PiConst/2;
+	double force = 200, step_i = 0.0001, direction = PiConst/2;
 	while (fabs(prev.apsis/1000 - target_orbit->GetApsis()/1000) > 0.1)
 	{
 		step curr;
 		CEllepticalOrbit temp(EarthGravy, 6400000, (int)prev.periapsis, (int)prev.apsis, prev.periapsis_angle);
 		curr.eccentricity = prev.eccentricity + step_i * dif_ecc(prev.true_anomaly, direction, force, &temp);
 		curr.focal = prev.focal + step_i * dif_focal(prev.true_anomaly, direction, force, &temp);
-		curr.periapsis_angle = prev.periapsis_angle + step_i * dif_periapsis_arg(prev.true_anomaly, direction, force, &temp);
+		curr.periapsis_angle = 0;// prev.periapsis_angle + step_i * dif_periapsis_arg(prev.true_anomaly, direction, force, &temp);
 		curr.periapsis = prev.periapsis + step_i * dif_periapsis(prev.true_anomaly, direction, force, &temp);
 		curr.apsis = prev.apsis + step_i * dif_apsis(prev.true_anomaly, direction, force, &temp);
-		curr.true_anomaly = prev.true_anomaly + step_i * dif_tetta( prev.true_anomaly, direction, force, &temp);
+		curr.true_anomaly = 0;//prev.true_anomaly + step_i * dif_tetta( prev.true_anomaly, direction, force, &temp);
 		prev = curr;
 		history.push_back(curr);
-	}
+	}*/
 
 
 	while(getchar()!='\n')

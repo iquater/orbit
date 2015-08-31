@@ -60,23 +60,23 @@ namespace utilites
 		return ConvertTrueFromEccentric(ea, e);
 	}
 
-	void DebugPrintOrbit( CEllepticalOrbit& orbit)
+	/*void DebugPrintOrbit( CEllepticalOrbit& orbit)
 	{
 		qDebug() << "Orbit Paramaters:";
 		qDebug() << QString("semi-major axis %1").arg( orbit.GetSemiMajorAxis() );
 		qDebug() << QString("Eccentricity %1").arg(orbit.GetEccentricity());
 		qDebug() << QString("Periapsis %1").arg(orbit.GetPeriapsis());
 		qDebug() << QString("Apsis %1").arg(orbit.GetApsis());
-	}
+	}*/
 
-	double dif_ecc(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	double dif_ecc(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit)
 	{
 		double result = 0;
 		/// de/dt:
-		double a = engine_force * sqrt(orbit->GetFocal() / EarthGravy);
+		double a = engine_force * sqrt(orbit->focal / EarthGravy);
 		double b = sin(anomaly)* cos(engine_direction);
-		double c = orbit->GetEccentricity() * cos(anomaly) * cos(anomaly) + 2 * cos(anomaly) + orbit->GetEccentricity();
-		double d = 1 + orbit->GetEccentricity()*cos(anomaly);
+		double c = orbit->eccentricity * cos(anomaly) * cos(anomaly) + 2 * cos(anomaly) + orbit->eccentricity;
+		double d = 1 + orbit->eccentricity*cos(anomaly);
 		double e = sin(engine_direction);
 
 		result = a * (b + c * e / d);
@@ -84,21 +84,21 @@ namespace utilites
 		return result;
 	}
 
-	double dif_focal(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	double dif_focal(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit)
 	{
 		double result = 0;
 		/// dp/dt:
 
-		double a = 2 * engine_force * orbit->GetFocal();
-		double b = 1 + orbit->GetEccentricity() * cos(anomaly);
-		double c = sqrt(orbit->GetFocal() / EarthGravy) * sin(engine_direction);
+		double a = 2 * engine_force * orbit->focal;
+		double b = 1 + orbit->eccentricity * cos(anomaly);
+		double c = sqrt(orbit->focal / EarthGravy) * sin(engine_direction);
 
 		result = a * c / b;
 
 		return result;
 	}
 
-	double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
+	/*double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit)
 	{
 		double result = 0;
 		/// dw/dt:	
@@ -158,5 +158,27 @@ namespace utilites
 
 
 		return result;
+	}*/
+
+	double velocity_raise_apo(kepler_orbit* orb, double new_apocenter, const double gravy )
+	{
+		new_apocenter = new_apocenter - orb->apocenter;
+		double result = sqrt (2 * EarthGravy / orb->pericenter) * 
+			( sqrt( (orb->apocenter + new_apocenter) / ( orb->apocenter + orb->pericenter + new_apocenter) ) -
+			sqrt (orb->apocenter / (orb->pericenter + orb->apocenter) ) );
+
+		return result;
 	}
+
+	double velocity_raise_peri(kepler_orbit* orb, double new_pericenter, const double gravy )
+	{
+		new_pericenter = new_pericenter - orb->pericenter;
+
+		double result = sqrt (2 * EarthGravy / orb->apocenter) * 
+			( sqrt( (orb->pericenter + new_pericenter) / (orb->apocenter + orb->pericenter + new_pericenter)) -
+			sqrt(orb->pericenter / (orb->pericenter + orb->apocenter)));
+
+		return result;
+	}
+
 }

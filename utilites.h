@@ -28,29 +28,32 @@ namespace utilites
 
 
 	/** семейство функций dif_ - оскулирующие элементы орбиты */
-	double dif_ecc(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+	double dif_ecc(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
-	double dif_focal(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+	double dif_focal(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
-	double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+	double dif_periapsis_arg(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
-	double dif_periapsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+	double dif_periapsis(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
-	double dif_apsis(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+	double dif_apsis(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
-	double dif_tetta(double anomaly, double engine_direction, double engine_force, CEllepticalOrbit* orbit);
+	double dif_tetta(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
+
+	/**
+	 * @brief приращение скорости для изменения высоты апоцентра
+	 * прикладывается в перицентре
+	 */
+	double velocity_raise_apo(kepler_orbit* current_orbit, double new_apocenter, const double gravy = EarthGravy); /// м/с
+
+	/**
+	 * @brief приращение скорости для изменения высоты перицентра
+	 * прикладывается в апоцентре
+	 */
+	double velocity_raise_peri(kepler_orbit* current_orbit, double new_pericenter, const double gravy = EarthGravy);
+
 
 	typedef double(*Elements_f)(double, double, double, CEllepticalOrbit *);
-
-	/*Elements_f dif_motion[] = //система дифференциальных уравнений
-	{ 
-		dif_ecc, 
-		dif_focal, 
-		dif_periapsis_arg, 
-		dif_periapsis, 
-		dif_apsis, 
-		dif_tetta 
-	};*/
 
 	void DebugPrintOrbit( CEllepticalOrbit&);
 }

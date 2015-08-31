@@ -4,22 +4,28 @@
 class CBody
 {
 	const double m_planet_mass; /// planet mass, kg
-	const int m_radius;		/// planet radius, m
-
-	int m_min_height; /// minimum orbit height, m
+	const double m_radius;			/// planet radius, km
+	double m_min_height;			/// minimum orbit height, km
 
 	CBody() :m_planet_mass(0), m_radius(0), m_min_height(0){}
+
 	CBody(const CBody&) : m_planet_mass(0), m_radius(0), m_min_height(0){}
+
 public:
-	CBody(double planet_mass,
-		int planet_radius
-		);
+	CBody(double planet_mass, double planet_radius);
 
 	const double & GetPlanetMass() { return m_planet_mass; }
 
-	const int & GetPlanetRadius(){ return m_radius; }
+	/**
+	 * @brief возвращает массу планеты
+	 */
+	double GetPlanetRadius(){ return m_radius; }
 
-	const int & GetMinHeight(){ return m_min_height; }
+	/**
+	 * @brief возвращает минимальную высоту полета вне атмосферы ( для Земли 200км)
+	 */
+	double GetMinHeight(){ return m_min_height; }
+
 
 	void SetMinHeight(int height) { m_min_height = height; }
 

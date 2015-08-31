@@ -1,14 +1,10 @@
 ﻿#ifndef ORBIT_H
 #define ORBIT_H
 
-#include <iostream>
-
 #include "body.h"
+#include <vector>
 
-
-
-
-class CEllepticalOrbit
+/*class CEllepticalOrbit
 {
 private:
 	CBody m_planet;
@@ -61,6 +57,66 @@ public:
 	double GetSemiMajorAxis();
 
 	double GetPeriapsisAng();
+};*/
+/// структура данных для хранения значений оскулирующих элементов орбиты
+struct kepler_orbit
+{
+	double pericenter;
+	double apocenter;
+	double eccentricity;
+	double focal;
+	double pericenter_angle;
+	double true_anomaly;
+
+	kepler_orbit():
+		pericenter(0),
+		apocenter(0),
+		eccentricity(0),
+		focal(0),
+		pericenter_angle(0),
+		true_anomaly(0) {}
+};
+
+typedef std::vector<kepler_orbit> history_t;
+
+class CEllepticalOrbit
+{
+	CBody m_planet; /// планета, в окрестностях которой строится орбита
+
+	/// параметры, определяющие форму орбиты
+	double m_pericenter; /// радиус перицентра орбиты, [км]
+	double m_apocenter; ///  радиус апоцентра орбиты, [км]
+	double m_focal; /// фокальный параметр, [км]
+	double m_semi_major_axis; /// большая полуось, [км]
+	double m_eccentricity; /// эксцентриситет
+
+	/// параметры, определяющие угловое положение орбиты относительно планеты:
+	double m_inclination; /// наклонение орбиты, [рад]
+	double m_ascending_node; /// долгота восходящего узла, [рад]
+	double m_pericenter_ang; /// аргумент перицентра, [рад]
+
+public:
+	CEllepticalOrbit(double planet_mass, double planet_radius, 
+		double pericenter, 
+		double apocenter,
+		double inclination = 0.0,
+		double ascending_node = 0.0 ,
+		double pericenter_ang = 0.0);
+
+
+	kepler_orbit GetKeplerOrbitFormat()
+	{
+		kepler_orbit ko;
+		ko.pericenter = m_pericenter * 1000;
+		ko.apocenter = m_apocenter * 1000;
+		ko.eccentricity = m_eccentricity;
+		ko.focal = m_focal * 1000;
+		ko.pericenter_angle = m_pericenter_ang;
+		ko.true_anomaly = 0.0;
+
+		return ko;
+	}
+
 };
 
 

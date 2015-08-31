@@ -3,7 +3,26 @@
 #include <vector>
 #include "constants.h"
 
-CEllepticalOrbit::CEllepticalOrbit(double planet_mass, int radius, double semi_major_axis, double eccentricity, double periapsis_ang,
+CEllepticalOrbit::CEllepticalOrbit(double planet_mass, double planet_radius, 
+	double pericenter, 
+	double apocenter,
+	double inclination ,
+	double ascending_node  ,
+	double pericenter_ang ):
+m_planet(planet_mass, planet_radius),
+	m_pericenter(pericenter),
+	m_apocenter(apocenter), 
+	m_inclination(inclination),
+	m_ascending_node(ascending_node),
+	m_pericenter_ang(pericenter_ang)
+{
+	m_focal = 2.0 * m_apocenter * m_pericenter / ( m_pericenter + m_apocenter);
+	m_semi_major_axis = ( m_pericenter + m_apocenter) / 2.0;
+	m_eccentricity = ( m_apocenter - m_pericenter )/ ( m_pericenter + m_apocenter);
+}
+
+
+/*CEllepticalOrbit::CEllepticalOrbit(double planet_mass, int radius, double semi_major_axis, double eccentricity, double periapsis_ang,
 	double inclination, double ascending_node, double mean_anomaly) 
 	:m_planet(planet_mass, radius),
 	m_semi_major_axis(semi_major_axis),
@@ -143,3 +162,4 @@ void fa()
 	
 	}
 }
+*/
