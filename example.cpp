@@ -52,18 +52,28 @@ int main ()
 
 	history_t history;
 	history.push_back(ko);
-	int step = 60;
+	int step = 1;
 	double engine_dir = PiConst / 2;
 	double engine_acc = 2;
 	for (size_t i = 0; i < 10; i++)
 	{ 
 		kepler_orbit temp;
-		temp.eccentricity = ko.eccentricity + step * dif_ecc(ko.true_anomaly, engine_dir, engine_acc, &ko);
+		/*temp.eccentricity = ko.eccentricity + step * dif_ecc(ko.true_anomaly, engine_dir, engine_acc, &ko);
 		temp.focal = ko.focal + step * dif_focal(ko.true_anomaly, engine_dir, engine_acc, &ko);
 		temp.pericenter_angle = ko.pericenter_angle + step * dif_periapsis_arg(ko.true_anomaly, engine_dir, engine_acc, &ko);
 		temp.pericenter = ko.pericenter + step * dif_periapsis(ko.true_anomaly, engine_dir, engine_acc, &ko);
 		temp.apocenter = ko.apocenter + step * dif_apsis(ko.true_anomaly, engine_dir, engine_acc, &ko);
-		temp.true_anomaly = ko.true_anomaly + step * dif_tetta(ko.true_anomaly, engine_dir, engine_acc, &ko);
+		temp.true_anomaly = ko.true_anomaly + step * dif_tetta(ko.true_anomaly, engine_dir, engine_acc, &ko);*/
+		double acc_r = engine_acc * sin(atan(tan(ko.true_anomaly) * ( 1 + 1/(1 + ko.eccentricity * cos(ko.true_anomaly) ) ) ) );
+		double acc_n = engine_acc * cos(atan(tan(ko.true_anomaly) * ( 1 + 1/(1 + ko.eccentricity * cos(ko.true_anomaly) ) ) ) );
+
+		temp.eccentricity = ko.eccentricity + step * dif_ecc_proj(ko.true_anomaly, acc_r, acc_n, &ko);
+		temp.focal = ko.focal + step * dif_focal_proj(ko.true_anomaly, acc_r, acc_n, &ko);
+		temp.pericenter_angle = ko.pericenter_angle + step * dif_pericenter_ang_proj(ko.true_anomaly, acc_r, acc_n, &ko);
+		temp.true_anomaly = ko.true_anomaly + step * dif_tetta_proj(ko.true_anomaly, acc_r, acc_n, &ko);
+
+		temp.pericenter = temp.focal / ( 1 + temp.eccentricity);
+		temp.apocenter = temp.focal / ( 1 - temp.eccentricity);
 		history.push_back(temp);
 		ko = temp;
 	}
