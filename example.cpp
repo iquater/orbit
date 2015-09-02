@@ -52,10 +52,10 @@ int main ()
 
 	history_t history;
 	history.push_back(ko);
-	int step = 1;
+	int step = 2;
 	double engine_dir = PiConst / 2;
 	double engine_acc = 2;
-	for (size_t i = 0; i < 10; i++)
+	while (10000000 - ko.apocenter > 100)
 	{ 
 		kepler_orbit temp;
 		/*temp.eccentricity = ko.eccentricity + step * dif_ecc(ko.true_anomaly, engine_dir, engine_acc, &ko);

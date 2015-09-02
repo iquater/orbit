@@ -218,7 +218,7 @@ namespace utilites
 
 		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // здесь не хватает части по наклонению
 
-		result = a + b;
+		result = a * b;
 
 		return result;
 	}
