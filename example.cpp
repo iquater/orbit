@@ -3,8 +3,11 @@
 #include "utilites.h"
 #include <math.h>
 #include <vector>
+#include "maneuver.h"
 using namespace utilites;
 
+
+using namespace maneuver;
 /*Elements_f dif_motion[] = //система дифференциальных уравнений
 { 
 	dif_ecc, 
@@ -34,12 +37,21 @@ struct step
 };
 
 typedef std::vector<step> history_t;*/
+int flying()
+{
+	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 7600);
+	
 
+	return 0;
+}
 int main ()
 {
 	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 7600);
 	CEllepticalOrbit * target_orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 10000);
 
+	CSetApocenter* apo = new CSetApocenter(10000, *orbit);
+	apo->Simulate();
+/*	flying();
 	kepler_orbit ko = orbit->GetKeplerOrbitFormat();
 	kepler_orbit nko = target_orbit->GetKeplerOrbitFormat();
 
@@ -58,12 +70,6 @@ int main ()
 	while (10000000 - ko.apocenter > 100)
 	{ 
 		kepler_orbit temp;
-		/*temp.eccentricity = ko.eccentricity + step * dif_ecc(ko.true_anomaly, engine_dir, engine_acc, &ko);
-		temp.focal = ko.focal + step * dif_focal(ko.true_anomaly, engine_dir, engine_acc, &ko);
-		temp.pericenter_angle = ko.pericenter_angle + step * dif_periapsis_arg(ko.true_anomaly, engine_dir, engine_acc, &ko);
-		temp.pericenter = ko.pericenter + step * dif_periapsis(ko.true_anomaly, engine_dir, engine_acc, &ko);
-		temp.apocenter = ko.apocenter + step * dif_apsis(ko.true_anomaly, engine_dir, engine_acc, &ko);
-		temp.true_anomaly = ko.true_anomaly + step * dif_tetta(ko.true_anomaly, engine_dir, engine_acc, &ko);*/
 		double acc_r = engine_acc * sin(atan(tan(ko.true_anomaly) * ( 1 + 1/(1 + ko.eccentricity * cos(ko.true_anomaly) ) ) ) );
 		double acc_n = engine_acc * cos(atan(tan(ko.true_anomaly) * ( 1 + 1/(1 + ko.eccentricity * cos(ko.true_anomaly) ) ) ) );
 
@@ -76,7 +82,7 @@ int main ()
 		temp.apocenter = temp.focal / ( 1 - temp.eccentricity);
 		history.push_back(temp);
 		ko = temp;
-	}
+	}*/
 
 
 
@@ -84,3 +90,5 @@ int main ()
 	{;}
 	return 0;
 }
+
+

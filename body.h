@@ -1,15 +1,15 @@
 #ifndef BODY_H
 #define BODY_H
-
+#include "constants.h"
 class CBody
 {
-	const double m_planet_mass; /// planet mass, kg
-	const double m_radius;			/// planet radius, km
+	double m_planet_mass; /// planet mass, kg
+	double m_radius;			/// planet radius, km
 	double m_min_height;			/// minimum orbit height, km
 
-	CBody() :m_planet_mass(0), m_radius(0), m_min_height(0){}
+	//CBody() :m_planet_mass(0), m_radius(0), m_min_height(0){}
 
-	CBody(const CBody&) : m_planet_mass(0), m_radius(0), m_min_height(0){}
+//	CBody(const CBody&) : m_planet_mass(0), m_radius(0), m_min_height(0){}
 
 public:
 	CBody(double planet_mass, double planet_radius);
@@ -28,6 +28,11 @@ public:
 
 
 	void SetMinHeight(int height) { m_min_height = height; }
+
+	double GetGravyConst()
+	{
+		return Gravy_const * m_planet_mass;
+	}
 
 };
 #endif // !BODY_H

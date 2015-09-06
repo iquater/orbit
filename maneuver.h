@@ -15,7 +15,18 @@ namespace maneuver
 
 	};
 
-	//typedef shared_ptr<IOperation> Operation;
+	struct CPassivePath
+	{
+		double begin_true_anomaly;
+		CEllepticalOrbit orbit;
+		double duration;
+	};
+
+	struct CActivePath
+	{
+		history_t history;
+		double duration;
+	};
 
 	class IOperation
 	{
@@ -23,18 +34,27 @@ namespace maneuver
 		virtual ~IOperation(){};
 	};
 
-	class CSetApsis: public IOperation
+	class CSetApocenter: public IOperation
 	{
-		double m_apsis;
-		double delta_v;
+		CEllepticalOrbit current_orbit;
+		double new_apocenter; // km
+		double delte_v; // необходимое приращение скорости
 	public:
-		CSetApsis(double apsis,const CEllepticalOrbit& orbit);
+
+		CSetApocenter(double apocenter, const CEllepticalOrbit& orbit);
+		void Simulate();
 	};
 
-	class CSetPeriapsis: public IOperation
+	class CSetPericenter: public IOperation
 	{
+		CEllepticalOrbit current_orbit;
+		double new_pericenter; // km
 	public:
-		CSetPeriapsis(double periapsis,const CEllepticalOrbit& orbit);
+		/**
+		*/
+		CSetPericenter(double periapcenter, const CEllepticalOrbit& _current_orbit);
+		
+		void Simulate();
 	};
 
 	class CSetRound: public IOperation

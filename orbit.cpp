@@ -21,6 +21,16 @@ m_planet(planet_mass, planet_radius),
 	m_eccentricity = ( m_apocenter - m_pericenter )/ ( m_pericenter + m_apocenter);
 }
 
+double CEllepticalOrbit::GetOrbitPeriod()
+{
+	double a = m_semi_major_axis * 1000;
+	return	2 * PiConst * sqrt(pow(a, 3)) / sqrt(m_planet.GetGravyConst());
+}
+
+double CEllepticalOrbit::GetMeanVelocity()
+{
+	return 2 * PiConst / GetOrbitPeriod();
+}
 
 /*CEllepticalOrbit::CEllepticalOrbit(double planet_mass, int radius, double semi_major_axis, double eccentricity, double periapsis_ang,
 	double inclination, double ascending_node, double mean_anomaly) 

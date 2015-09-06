@@ -117,6 +117,11 @@ public:
 		return ko;
 	}
 
+	double GetOrbitPeriod();
+
+	double GetMeanVelocity();
+
+	CBody GetPlanet() { return m_planet; }
 };
 
 
