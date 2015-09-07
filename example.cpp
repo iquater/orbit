@@ -48,9 +48,14 @@ int main ()
 {
 	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 7600);
 	CEllepticalOrbit * target_orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 10000);
+	double t = orbit->GetOrbitPeriod();
+	double m = orbit->GetMeanVelocity();
+	CPassivePath * path = new CPassivePath(*orbit, 0, 2 * PiConst, 0.1);
 
-	CSetApocenter* apo = new CSetApocenter(10000, *orbit);
-	apo->Simulate();
+	CActivePlanConstArg act(*orbit, 0, 0.1, 7, 2);
+
+	//CSetApocenter* apo = new CSetApocenter(10000, *orbit);
+	//apo->Simulate();
 /*	flying();
 	kepler_orbit ko = orbit->GetKeplerOrbitFormat();
 	kepler_orbit nko = target_orbit->GetKeplerOrbitFormat();

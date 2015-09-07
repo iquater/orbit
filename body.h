@@ -7,14 +7,11 @@ class CBody
 	double m_radius;			/// planet radius, km
 	double m_min_height;			/// minimum orbit height, km
 
-	//CBody() :m_planet_mass(0), m_radius(0), m_min_height(0){}
-
-//	CBody(const CBody&) : m_planet_mass(0), m_radius(0), m_min_height(0){}
-
+	CBody() {}
 public:
 	CBody(double planet_mass, double planet_radius);
 
-	const double & GetPlanetMass() { return m_planet_mass; }
+	double GetPlanetMass(){ return m_planet_mass; }
 
 	/**
 	 * @brief возвращает массу планеты
@@ -26,13 +23,9 @@ public:
 	 */
 	double GetMinHeight(){ return m_min_height; }
 
+	void SetMinHeight(int height){ m_min_height = height; }
 
-	void SetMinHeight(int height) { m_min_height = height; }
-
-	double GetGravyConst()
-	{
-		return Gravy_const * m_planet_mass;
-	}
+	double GetGravyConst(){ return Gravy_const * m_planet_mass; }
 
 };
 #endif // !BODY_H
