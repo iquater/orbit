@@ -120,10 +120,13 @@ namespace maneuver
 	{
 		CEllepticalOrbit current_orbit;
 		double new_apocenter; // km
+		maneuver_type type;
 		double delte_v; // необходимое приращение скорости
 	public:
 
 		CSetApocenter(double apocenter, const CEllepticalOrbit& orbit);
+
+		std::vector<SPath *> GetTransferTrajectory();
 
 	};
 
