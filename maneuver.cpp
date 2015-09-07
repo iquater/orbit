@@ -45,11 +45,13 @@ namespace maneuver
 			double _begin_true_anomaly,
 			double _step,
 			double _engine_time,
-			double _engine_acc): orbit(_orbit),
+			double _engine_acc,
+			maneuver_type _type): orbit(_orbit),
 			begin_true_anomaly(_begin_true_anomaly),
 			step(_step),
 			engine_time(_engine_time),
-			engine_acc(_engine_acc)
+			engine_acc(_engine_acc),
+			type(_type)
 	{ }
 
 	///реализация конструктора активного участка  с постоянным аргументом перицентра (maneuver.h)
@@ -57,7 +59,9 @@ namespace maneuver
 			double _begin_true_anomaly,
 			double _step,
 			double _engine_time,
-			double _engine_force):CActivePath(_orbit, _begin_true_anomaly, _step, _engine_time, _engine_force)
+			double _engine_force,
+			maneuver_type _type,
+			double _constraint):CActivePath(_orbit, _begin_true_anomaly, _step, _engine_time, _engine_force, _type)
 	{
 		kepler_orbit elements = orbit.GetKeplerOrbitFormat();
 		elements.true_anomaly = _begin_true_anomaly;
@@ -66,7 +70,7 @@ namespace maneuver
 
 		double temp_t = 0;
 		//Моделирование движения (оскулирующие элементы - интегрируем Эйлером)
-		while (temp_t <= engine_time)
+		while (temp_t < engine_time)
 		{
 			kepler_orbit curr_elements;
 
@@ -84,6 +88,26 @@ namespace maneuver
 			history.push_back(curr_elements);
 			elements = curr_elements;
 			temp_t += step;
+
+			switch (type)
+			{
+			case maneuver::maneuver_complanar_apo_raise:
+				if( _constraint >= elements.apocenter) break;
+
+			case maneuver::maneuver_complanar_apo_descend:
+				if( _constraint <= elements.apocenter) break;
+
+			case maneuver::maneuver_complanar_peri_raise:
+				if( _constraint >= elements.pericenter) break;
+
+			case maneuver::maneuver_complanar_peri_descend:
+				if( _constraint <= elements.pericenter) break;
+
+			case maneuver::maneuver_complanar_peri_arg:
+				break;
+			default:
+				break;
+			}
 		}
 	}
 
@@ -96,7 +120,7 @@ namespace maneuver
 
 	}
 
-	void CSetApocenter::Simulate()
+	/*void CSetApocenter::Simulate()
 	{
 		double t_engine = 7; // время работы двигателя
 		double engine_force = 19000; // тяга двигателя (Разгонный Блок), Н
@@ -144,19 +168,13 @@ namespace maneuver
 			curr_apo = ko.apocenter;
 			orbit = new_orb;
 		}
-	}
+	}*/
 
 
 	CSetPericenter::CSetPericenter(double pericenter, const CEllepticalOrbit& _current_orbit):
 		current_orbit(_current_orbit),
 		new_pericenter(pericenter)
 	{
-
-	}
-
-	void CSetPericenter::Simulate()
-	{
-		double t_engine = 7; // 7 секунд
 
 	}
 }
