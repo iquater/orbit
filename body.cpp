@@ -5,4 +5,3 @@ CBody::CBody(double planet_mass, double radius)
 	m_radius(radius),
 	m_min_height(0)
 {}
-

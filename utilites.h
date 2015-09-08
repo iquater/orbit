@@ -10,9 +10,9 @@ namespace utilites
 
 	/**
 	 * @brief ConvertMeanToEccentric
-	 * преобразование средней аномалии в эксцентрическую
-	 * источник http://murison.alpheratz.net/dynamics/twobody/KeplerIterations_summary.pdf
-	 * версия на python ( и автор реализации) https://github.com/RazerM/orbital
+	 * РїСЂРµРѕР±СЂР°Р·РѕРІР°РЅРёРµ СЃСЂРµРґРЅРµР№ Р°РЅРѕРјР°Р»РёРё РІ СЌРєСЃС†РµРЅС‚СЂРёС‡РµСЃРєСѓСЋ
+	 * РёСЃС‚РѕС‡РЅРёРє http://murison.alpheratz.net/dynamics/twobody/KeplerIterations_summary.pdf
+	 * РІРµСЂСЃРёСЏ РЅР° python ( Рё Р°РІС‚РѕСЂ СЂРµР°Р»РёР·Р°С†РёРё) https://github.com/RazerM/orbital
 	 */
 	double ConvertEccentricFromMean(double mean_anomaly, double eccentricity, double tolerance);
 
@@ -27,7 +27,7 @@ namespace utilites
 	double ConvertTrueFromMean(double mean_anomaly, double eccentricity);
 
 
-	/** семейство функций dif_ - оскулирующие элементы орбиты */
+	/** СЃРµРјРµР№СЃС‚РІРѕ С„СѓРЅРєС†РёР№ dif_ - РѕСЃРєСѓР»РёСЂСѓСЋС‰РёРµ СЌР»РµРјРµРЅС‚С‹ РѕСЂР±РёС‚С‹ */
 	double dif_ecc(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
 	double dif_focal(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
@@ -40,7 +40,7 @@ namespace utilites
 
 	double dif_tetta(double anomaly, double engine_direction, double engine_force, kepler_orbit* orbit);
 
-	/** проекции ускарения */
+	/** РїСЂРѕРµРєС†РёРё СѓСЃРєР°СЂРµРЅРёСЏ */
 	double dif_ecc_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
 
 	double dif_focal_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
@@ -52,14 +52,14 @@ namespace utilites
 	double dif_sigma_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit);
 
 	/**
-	 * @brief приращение скорости для изменения высоты апоцентра
-	 * прикладывается в перицентре
+	 * @brief РїСЂРёСЂР°С‰РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РІС‹СЃРѕС‚С‹ Р°РїРѕС†РµРЅС‚СЂР°
+	 * РїСЂРёРєР»Р°РґС‹РІР°РµС‚СЃСЏ РІ РїРµСЂРёС†РµРЅС‚СЂРµ
 	 */
-	double velocity_raise_apo(kepler_orbit* current_orbit, double new_apocenter, const double gravy = EarthGravy); /// м/с
+	double velocity_raise_apo(kepler_orbit* current_orbit, double new_apocenter, const double gravy = EarthGravy); /// Рј/СЃ
 
 	/**
-	 * @brief приращение скорости для изменения высоты перицентра
-	 * прикладывается в апоцентре
+	 * @brief РїСЂРёСЂР°С‰РµРЅРёРµ СЃРєРѕСЂРѕСЃС‚Рё РґР»СЏ РёР·РјРµРЅРµРЅРёСЏ РІС‹СЃРѕС‚С‹ РїРµСЂРёС†РµРЅС‚СЂР°
+	 * РїСЂРёРєР»Р°РґС‹РІР°РµС‚СЃСЏ РІ Р°РїРѕС†РµРЅС‚СЂРµ
 	 */
 	double velocity_raise_peri(kepler_orbit* current_orbit, double new_pericenter, const double gravy = EarthGravy);
 

@@ -1,4 +1,4 @@
-﻿#include "orbit.h"
+#include "orbit.h"
 #include <stdlib.h>
 #include <vector>
 #include "constants.h"

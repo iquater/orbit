@@ -3,9 +3,9 @@
 #include "constants.h"
 class CBody
 {
-	double m_planet_mass; /// planet mass, kg
-	double m_radius;			/// planet radius, km
-	double m_min_height;			/// minimum orbit height, km
+	double m_planet_mass;	/// РјР°СЃСЃР° РїР»Р°РЅРµС‚С‹, kg
+	double m_radius;		/// СЂР°РґРёСѓСЃ РїР»Р°РЅРµС‚С‹, km
+	double m_min_height;	/// РјРёРЅРёРјР°Р»СЊРЅР°СЏ РІС‹СЃРѕС‚Р° РѕСЂР±РёС‚С‹, km
 
 	CBody() {}
 public:
@@ -14,12 +14,12 @@ public:
 	double GetPlanetMass(){ return m_planet_mass; }
 
 	/**
-	 * @brief возвращает массу планеты
+	 * @brief РІРѕР·РІСЂР°С‰Р°РµС‚ РјР°СЃСЃСѓ РїР»Р°РЅРµС‚С‹
 	 */
 	double GetPlanetRadius(){ return m_radius; }
 
 	/**
-	 * @brief возвращает минимальную высоту полета вне атмосферы ( для Земли 200км)
+	 * @brief РІРѕР·РІСЂР°С‰Р°РµС‚ РјРёРЅРёРјР°Р»СЊРЅСѓСЋ РІС‹СЃРѕС‚Сѓ РїРѕР»РµС‚Р° РІРЅРµ Р°С‚РјРѕСЃС„РµСЂС‹ ( РґР»СЏ Р—РµРјР»Рё 200РєРј)
 	 */
 	double GetMinHeight(){ return m_min_height; }
 

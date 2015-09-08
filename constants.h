@@ -4,16 +4,16 @@
 #define _USE_MATH_DEFINES
 #include <math.h>
 
-///гравитационная постоянная:
+///РіСЂР°РІРёС‚Р°С†РёРѕРЅРЅР°СЏ РїРѕСЃС‚РѕСЏРЅРЅР°СЏ:
 const double Gravy_const = 6.67408 * (pow(10.0, -11));
 
-///число Pi:
+///С‡РёСЃР»Рѕ Pi:
 const double PiConst = M_PI;
 
-///масса Земли в кг:
+///РјР°СЃСЃР° Р—РµРјР»Рё РІ РєРі:
 const double EarthMass = 5.97219 * (pow(10.0, 24));
 
-///гравитационная постоянная Земли
+///РіСЂР°РІРёС‚Р°С†РёРѕРЅРЅР°СЏ РїРѕСЃС‚РѕСЏРЅРЅР°СЏ Р—РµРјР»Рё
 const double EarthGravy = Gravy_const * EarthMass;
 
 

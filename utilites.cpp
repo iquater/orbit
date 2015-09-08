@@ -216,7 +216,7 @@ namespace utilites
 
 		double a = sqrt(orbit->focal / EarthGravy) / orbit->eccentricity;
 
-		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // здесь не хватает части по наклонению
+		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // Р·РґРµСЃСЊ РЅРµ С…РІР°С‚Р°РµС‚ С‡Р°СЃС‚Рё РїРѕ РЅР°РєР»РѕРЅРµРЅРёСЋ
 
 		result = a * b;
 
@@ -242,7 +242,7 @@ namespace utilites
 
 		double a = sqrt(orbit->focal / EarthGravy) / orbit->eccentricity;
 
-		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // здесь не хватает части по наклонению
+		double b = -acc_r * cos(anomaly) + acc_n * (1 + r / orbit->focal) * sin(anomaly); // Р·РґРµСЃСЊ РЅРµ С…РІР°С‚Р°РµС‚ С‡Р°СЃС‚Рё РїРѕ РЅР°РєР»РѕРЅРµРЅРёСЋ
 
 		result = a * b;
 

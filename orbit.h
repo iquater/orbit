@@ -1,4 +1,4 @@
-﻿#ifndef ORBIT_H
+#ifndef ORBIT_H
 #define ORBIT_H
 
 #include "body.h"

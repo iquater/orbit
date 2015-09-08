@@ -8,7 +8,7 @@ using namespace utilites;
 
 
 using namespace maneuver;
-/*Elements_f dif_motion[] = //ñèñòåìà äèôôåðåíöèàëüíûõ óðàâíåíèé
+/*Elements_f dif_motion[] = //ÑÐ¸ÑÑ‚ÐµÐ¼Ð° Ð´Ð¸Ñ„Ñ„ÐµÑ€ÐµÐ½Ñ†Ð¸Ð°Ð»ÑŒÐ½Ñ‹Ñ… ÑƒÑ€Ð°Ð²Ð½ÐµÐ½Ð¸Ð¹
 { 
 	dif_ecc, 
 	dif_focal, 
@@ -43,10 +43,12 @@ int main ()
 //	CEllepticalOrbit * target_orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 10000);
 	double t = orbit->GetOrbitPeriod();
 	double m = orbit->GetMeanVelocity();
-	CPassivePath * path = new CPassivePath(*orbit, 0, 2 * PiConst, 0.1);
+	//CPassivePath * path = new CPassivePath(*orbit, 0, 2 * PiConst, 0.1);
 
-	CActivePlanConstArg act(*orbit, 0, 0.1, 7, 2, maneuver_complanar_apo_raise, 7800000);
+	//CActivePlanConstArg act(*orbit, 0, 0.1, 7, 2, maneuver_complanar_apo_raise, 7800000);
 
+	CSetApocenter * apo = new CSetApocenter(7500, *orbit);
+	apo->GetTransferTrajectory(0, 7, 2.5, 0.05);
 	//CSetApocenter* apo = new CSetApocenter(10000, *orbit);
 	//apo->Simulate();
 /*	flying();
