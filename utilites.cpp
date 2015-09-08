@@ -212,6 +212,9 @@ namespace utilites
 	{
 		double result;
 
+		if (orbit->eccentricity == 0)
+			return 0;
+
 		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
 
 		double a = sqrt(orbit->focal / EarthGravy) / orbit->eccentricity;
@@ -237,6 +240,9 @@ namespace utilites
 	double dif_sigma_proj(double anomaly, double acc_r, double acc_n, kepler_orbit* orbit)
 	{
 		double result;
+		
+		if (orbit->eccentricity == 0)
+			return 0;
 
 		double r = orbit->focal / (1 + orbit->eccentricity * cos(anomaly));
 

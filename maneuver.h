@@ -67,6 +67,7 @@ namespace maneuver
 		double engine_acc;				/// ускарение создаваемое двигателем [м/(с*с)]
 		history_t history;				/// результаты моделирования
 		maneuver_type type;				/// тип маневра
+		double duration;				/// продолжительность маневра
 
 		CActivePath(CEllepticalOrbit _orbit, 
 			double _begin_true_anomaly,
@@ -142,11 +143,13 @@ namespace maneuver
 	{
 		CEllepticalOrbit current_orbit;
 		double new_pericenter; // km
+		maneuver_type type;
 	public:
 		/**
 		*/
 		CSetPericenter(double periapcenter, const CEllepticalOrbit& _current_orbit);
 
+		std::vector<SPath *> GetTransferTrajectory(double begin_true_anomaly, double engine_time, double engine_acc, double step);
 	};
 
 	class CSetRound: public IOperation

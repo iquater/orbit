@@ -51,7 +51,8 @@ namespace maneuver
 			step(_step),
 			engine_time(_engine_time),
 			engine_acc(_engine_acc),
-			type(_type)
+			type(_type),
+			duration(0.0)
 	{ }
 
 	///реализация конструктора активного участка  с постоянным аргументом перицентра (maneuver.h)
@@ -143,69 +144,81 @@ namespace maneuver
 	std::vector<SPath*> CSetApocenter::GetTransferTrajectory(double true_anomaly, double eng_time, double eng_acc, double step)
 	{
 		std::vector<SPath*> result;
+
+		kepler_orbit elements  = current_orbit.GetKeplerOrbitFormat();
+		double target_apocenter = new_apocenter * 1000;
+
+		double curr_apocenter = elements.apocenter;
+		CEllepticalOrbit temp_orbit(current_orbit);
+
+		double constraint = new_apocenter  * 1000;
+		long double final_time = 0.0;
+		
+		//if(true_anomaly != 0.0)
+
 		switch(type)
 		{
 		case maneuver_complanar_apo_raise:
 			{
-				kepler_orbit elements  = current_orbit.GetKeplerOrbitFormat();
-				double target_apocenter = new_apocenter * 1000;
-
-				double curr_apocenter = elements.apocenter;
-				CEllepticalOrbit temp_orbit(current_orbit);
-
-				double constraint = new_apocenter  * 1000;
-				long double final_time = 0.0;
-
-
 				while (curr_apocenter < target_apocenter )
 				{
+					//перевод начинается с активного участка в перицентре орбиты
 					CActivePlanConstArg * active = new CActivePlanConstArg(temp_orbit, true_anomaly, step, eng_time, eng_acc, type, constraint );
 					const kepler_orbit & finish_pos = active->get_finish_pos();
+					curr_apocenter = finish_pos.apocenter;
+					result.push_back(active);
+
+					if (curr_apocenter >= target_apocenter)
+					{
+						// если достигли требуемого значения апоцентра - вычисляем время
+						size_t n = active->history.size();
+						double dt = (n - 1) * step;
+						final_time +=dt;
+						active->duration = dt;
+						break;
+					}
+					active->duration = eng_time;
 					final_time += eng_time;
+					// пассивный учаток - виток до нового включения двигателей
 					CEllepticalOrbit orb(temp_orbit.GetPlanet().GetPlanetMass(), temp_orbit.GetPlanet().GetPlanetRadius(), 
 						finish_pos.pericenter / 1000, finish_pos.apocenter / 1000);
-
+					temp_orbit = orb;
 					CPassivePath * pass = new CPassivePath(orb, finish_pos.true_anomaly, 2 * PiConst, step);
 					final_time += pass->duration;
-				
-					curr_apocenter = finish_pos.apocenter;
-					temp_orbit = orb;
-					result.push_back(active);
 					result.push_back(pass);
 				}
-
 				return result;
 			}
 			break;
 		case maneuver_complanar_apo_descend:
 			{
-				kepler_orbit elements  = current_orbit.GetKeplerOrbitFormat();
-				double target_apocenter = new_apocenter * 1000;
-
-				double curr_apocenter = elements.apocenter;
-				CEllepticalOrbit temp_orbit(current_orbit);
-
-				double constraint = new_apocenter * 1000;
-				long double final_time = 0.0;
-
-
 				while (curr_apocenter > target_apocenter )
 				{
 					CActivePlanConstArg * active = new CActivePlanConstArg(temp_orbit, true_anomaly, step, eng_time, eng_acc * (-1), type, constraint );
 					const kepler_orbit & finish_pos = active->get_finish_pos();
-					final_time += eng_time;
+					
 					CEllepticalOrbit orb(temp_orbit.GetPlanet().GetPlanetMass(), temp_orbit.GetPlanet().GetPlanetRadius(), 
 						finish_pos.pericenter / 1000, finish_pos.apocenter / 1000);
+					curr_apocenter = finish_pos.apocenter;
+					result.push_back(active);
+
+					if(curr_apocenter <= target_apocenter)
+					{
+						size_t n = active->history.size();
+						double dt = (n - 1) * step;
+						final_time +=dt;
+						active->duration = dt;
+						break;
+					}
+					active->duration = eng_time;
+					final_time += eng_time;
 
 					CPassivePath * pass = new CPassivePath(orb, finish_pos.true_anomaly, 2 * PiConst, step);
 					final_time += pass->duration;
 				
-					curr_apocenter = finish_pos.apocenter;
 					temp_orbit = orb;
-					result.push_back(active);
 					result.push_back(pass);
 				}
-
 				return result;
 			}
 			break;
@@ -221,8 +234,102 @@ namespace maneuver
 		current_orbit(_current_orbit),
 		new_pericenter(pericenter)
 	{
+		kepler_orbit elements  = current_orbit.GetKeplerOrbitFormat();
+		double target_pericenter = new_pericenter * 1000;
 
+		if( target_pericenter > elements.pericenter ) 
+			type = maneuver_complanar_peri_raise;
+		else if (target_pericenter < elements.pericenter )
+			type = maneuver_complanar_peri_descend;
 	}
+
+	std::vector<SPath*> CSetPericenter::GetTransferTrajectory(double true_anomaly, double eng_time, double eng_acc, double step)
+	{
+		
+		std::vector<SPath*> result;
+
+		kepler_orbit elements  = current_orbit.GetKeplerOrbitFormat();
+		double target_pericenter = new_pericenter * 1000;
+
+		double curr_pericenter = elements.pericenter;
+		CEllepticalOrbit temp_orbit(current_orbit);
+
+		double constraint = new_pericenter  * 1000;
+		long double final_time = 0.0;
+
+		true_anomaly = PiConst;//активный участок начинается в апоцентре
+
+		switch(type)
+		{
+		case maneuver_complanar_peri_raise:
+			{
+				while (curr_pericenter <  target_pericenter)
+				{
+					//перевод начинается с активного участка в апоцентре орбиты
+					CActivePlanConstArg * active = new CActivePlanConstArg(temp_orbit, true_anomaly, step, eng_time, eng_acc, type, constraint );
+					const kepler_orbit & finish_pos = active->get_finish_pos();
+					curr_pericenter = finish_pos.pericenter;
+					result.push_back(active);
+
+					if (curr_pericenter >= target_pericenter)
+					{
+						// если достигли требуемого значения перицентра - вычисляем время
+						size_t n = active->history.size();
+						double dt = (n - 1) * step;
+						final_time +=dt;
+						active->duration = dt;
+						break;
+					}
+					active->duration = eng_time;
+					final_time += eng_time;
+					// пассивный учаток - виток до нового включения двигателей
+					CEllepticalOrbit orb(temp_orbit.GetPlanet().GetPlanetMass(), temp_orbit.GetPlanet().GetPlanetRadius(), 
+						finish_pos.pericenter / 1000, finish_pos.apocenter / 1000);
+					temp_orbit = orb;
+					CPassivePath * pass = new CPassivePath(orb, finish_pos.true_anomaly, 2 * PiConst, step);
+					final_time += pass->duration;
+					result.push_back(pass);
+				}
+				return result;
+			}
+			break;
+		case maneuver_complanar_peri_descend:
+			{
+				while (curr_pericenter >  target_pericenter)
+				{
+					//перевод начинается с активного участка в апоцентре орбиты
+					CActivePlanConstArg * active = new CActivePlanConstArg(temp_orbit, true_anomaly, step, eng_time, eng_acc*(-1), type, constraint );
+					const kepler_orbit & finish_pos = active->get_finish_pos();
+					curr_pericenter = finish_pos.pericenter;
+					result.push_back(active);
+
+					if (curr_pericenter <= target_pericenter)
+					{
+						// если достигли требуемого значения перицентра - вычисляем время
+						size_t n = active->history.size();
+						double dt = (n - 1) * step;
+						final_time +=dt;
+						active->duration = dt;
+						break;
+					}
+					active->duration = eng_time;
+					final_time += eng_time;
+					// пассивный учаток - виток до нового включения двигателей
+					CEllepticalOrbit orb(temp_orbit.GetPlanet().GetPlanetMass(), temp_orbit.GetPlanet().GetPlanetRadius(), 
+						finish_pos.pericenter / 1000, finish_pos.apocenter / 1000);
+					temp_orbit = orb;
+					CPassivePath * pass = new CPassivePath(orb, finish_pos.true_anomaly, 2 * PiConst, step);
+					final_time += pass->duration;
+					result.push_back(pass);
+				}
+				return result;
+			}
+			break;
+		default:
+			return result;
+		}
+	}
+
 }
 
 namespace maneuver

@@ -39,7 +39,12 @@ struct step
 typedef std::vector<step> history_t;*/
 int main ()
 {
-	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 7600);
+	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 7600); 
+
+	CEllepticalOrbit * low_orbit = new CEllepticalOrbit(EarthMass, 6400, 6600, 6600);
+
+	CEllepticalOrbit * gso_orbit = new CEllepticalOrbit(EarthMass, 6400, 6400+35786, 6400+35786);
+	double a = gso_orbit->GetOrbitPeriod();
 //	CEllepticalOrbit * target_orbit = new CEllepticalOrbit(EarthMass, 6400, 7200, 10000);
 	double t = orbit->GetOrbitPeriod();
 	double m = orbit->GetMeanVelocity();
@@ -47,8 +52,9 @@ int main ()
 
 	//CActivePlanConstArg act(*orbit, 0, 0.1, 7, 2, maneuver_complanar_apo_raise, 7800000);
 
-	CSetApocenter * apo = new CSetApocenter(7500, *orbit);
-	apo->GetTransferTrajectory(0, 7, 2.5, 0.05);
+	//CSetApocenter * apo = new CSetApocenter(35786, *low_orbit);
+	CSetPericenter * apo = new CSetPericenter(7100, *orbit);
+	apo->GetTransferTrajectory(0, 7, 2.5, 0.01);
 	//CSetApocenter* apo = new CSetApocenter(10000, *orbit);
 	//apo->Simulate();
 /*	flying();
