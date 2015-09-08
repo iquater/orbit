@@ -82,13 +82,8 @@ namespace utilites
 
 	struct virtual_transfer_orbit
 	{
-		kepler_orbit orbit; //орбита, после приложения импульса
-		double impulse;
+		kepler_orbit orbit;
 		virtual_maneuver_type type;
-
-		/*kepler_orbit transfer_orbit; //трансферная орбита ( либо конечная)
-		double begin_anomaly; // точка приложения импульса на начальной орбите
-		double end_anomaly; // точка, соответствующая концу трансферной орбиты ( если равна нулю, значит transfer_orbit конечная орбита)*/
 	};
 
 
@@ -97,57 +92,55 @@ namespace utilites
 	 */
 	struct virtual_maneuver
 	{
+		std::vector<double> impulses; // мс
 		std::vector<virtual_transfer_orbit> transfer_orbits;
 		virtual_maneuver_type type;
 
-		virtual_maneuver(kepler_orbit & init_orbit, kepler_orbit & target_orbit)
+		/*virtual_maneuver(kepler_orbit & init_orbit, kepler_orbit & target_orbit)
 		{
 			if( init_orbit.eccentricity == 0 && init_orbit.pericenter ==  target_orbit.pericenter && init_orbit.apocenter < target_orbit.apocenter)
 			{
-				//пока предполагаем, что начальная и конечная орбиты имеют один и тот же аргумент перицентра
-				//момент приложения импульса для круговой орбиты можно вычислять из аргумента перицентра
 				double vc = circle_velocity(init_orbit); 
 				double vp = pericenter_velocity(target_orbit);
 
 				double impulse = vp - vc;
+				impulses.push_back(impulse);
 
 				kepler_orbit transfer;
 				transfer.apocenter = target_orbit.apocenter;
-				transfer.pericenter = target_orbit.pericenter;
-				transfer.eccentricity = calc_eccentricity(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.focal =  calc_focal(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.pericenter_angle = target_orbit.pericenter_angle; 
+				transfer.pericenter = init_orbit.pericenter;
+				transfer.eccentricity = calc_eccentricity(init_orbit.pericenter, target_orbit.apocenter);
+				transfer.focal =  calc_focal(init_orbit.pericenter, target_orbit.apocenter);
+				transfer.pericenter_angle = init_orbit.pericenter_angle;
 
 				virtual_transfer_orbit vto;
 				vto.orbit = transfer;
-				vto.impulse = impulse;
 				vto.type = virtual_maneuver_circle_to_elleptic_ep_ha;
 
 				transfer_orbits.push_back(vto);
 			}
 			else if( init_orbit.eccentricity == 0 && init_orbit.apocenter ==  target_orbit.apocenter && init_orbit.pericenter > target_orbit.pericenter)
 			{
-				//пока предполагаем, что начальная и конечная орбиты имеют один и тот же аргумент перицентра
 				double vc = circle_velocity(init_orbit); 
 				double va = apocenter_velocity(target_orbit);
 
-				double impulse = vc - va;
+				double impulse = va - vc;
+				impulses.push_back(impulse);
 
 				kepler_orbit transfer;
-				transfer.apocenter = target_orbit.apocenter;
+				transfer.apocenter = init_orbit.apocenter;
 				transfer.pericenter = target_orbit.pericenter;
-				transfer.eccentricity = calc_eccentricity(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.focal =  calc_focal(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.pericenter_angle = target_orbit.pericenter_angle;
+				transfer.eccentricity = calc_eccentricity(target_orbit.pericenter, init_orbit.apocenter);
+				transfer.focal =  calc_focal(target_orbit.pericenter, init_orbit.apocenter);
+				transfer.pericenter_angle = init_orbit.pericenter_angle;
 
 				virtual_transfer_orbit vto;
 				vto.orbit = transfer;
-				vto.impulse = (-1)*impulse;
 				vto.type = virtual_maneuver_circle_to_elleptic_ep_ha;
 
 				transfer_orbits.push_back(vto);
 			}
-		}
+		}*/
 
 	private:
 
