@@ -254,4 +254,14 @@ namespace utilites
 
 		return result;
 	}
+
+	double calc_eccentricity(double pericenter, double apocenter)
+	{
+		return (apocenter - pericenter)/ (apocenter + pericenter);
+	}
+
+	double calc_focal(double pericenter, double apocenter)
+	{
+		return (2 *apocenter * pericenter)/ (apocenter + pericenter);
+	}
 }
