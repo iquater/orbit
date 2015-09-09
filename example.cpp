@@ -11,7 +11,7 @@ using namespace maneuver;
 
 int main ()
 {
-	CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 6600, 7600); 
+	//CEllepticalOrbit * orbit = new CEllepticalOrbit(EarthMass, 6400, 6600, 7600); 
 
 	CEllepticalOrbit * low_orbit = new CEllepticalOrbit(EarthMass, 6400, 6600, 6600);
 

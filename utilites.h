@@ -77,14 +77,20 @@ namespace utilites
 	enum virtual_maneuver_type
 	{
 		virtual_maneuver_unknown = 0,
-		virtual_maneuver_circle_to_tangent_elleptic_raise = 1, // касающиеся орбиты
-		virtual_maneuver_circle_to_tangent_elleptic_descend = 2,// касающиеся орбиты
+		virtual_maneuver_circle_to_tangent_elleptic_raise = 1, // компланарный, касающиеся орбиты
+		virtual_maneuver_circle_to_tangent_elleptic_descend = 2,// компланарный, касающиеся орбиты
 
-		virtual_maneuver_elleptic_to_tangent_circle_raise = 3, // касающиеся орбиты
-		virtual_maneuver_elleptic_to_tangent_circle_descend = 4, // касающиеся орбиты
+		virtual_maneuver_elleptic_to_tangent_circle_raise = 3, // компланарный, касающиеся орбиты
+		virtual_maneuver_elleptic_to_tangent_circle_descend = 4, // компланарный, касающиеся орбиты
 
-		virtual_maneuver_circle_to_circle_raise_hohmann = 5,// с круговой на круговую
-		virtual_maneuver_circle_to_circle_descend_hohmann = 6,// с круговой на круговую
+		virtual_maneuver_circle_to_circle_raise_hohmann = 5,// компланарный, с круговой на круговую
+		virtual_maneuver_circle_to_circle_descend_hohmann = 6,// компланарный, с круговой на круговую
+
+		virtual_maneuver_elleptic_apocenter_raise = 7, // компланарный, поднять апоцентр
+		virtual_maneuver_elleptic_apocenter_descend = 8, // компланарный, поднять апоцентр
+
+		virtual_maneuver_elleptic_pericenter_raise = 7, // компланарный, поднять апоцентр
+		virtual_maneuver_elleptic_pericenter_descend = 8, // компланарный, поднять апоцентр
 	};
 
 	struct virtual_transfer_orbit
@@ -296,6 +302,61 @@ namespace utilites
 
 		}
 
+		void from_elleptic_apocenter_change(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			//assert( _target_orbit.apocenter > _init_orbit.pericenter);
+			//assert( _targer_orbit.pericenter < _init_orbit.apocenter);
+
+			double init_vel_p = pericenter_velocity(_init_orbit); // скорость в перицентре начальной орбиты
+
+			kepler_orbit transfer;
+			transfer.pericenter = _init_orbit.pericenter;
+			transfer.apocenter = _target_orbit.apocenter;
+			transfer.eccentricity = calc_eccentricity(transfer.pericenter, transfer.apocenter);
+			transfer.focal = calc_focal(transfer.pericenter, transfer.apocenter);
+			transfer.pericenter_angle = _init_orbit.pericenter_angle;
+
+			double transfer_vel_p = pericenter_velocity(transfer);
+
+			double impulse = transfer_vel_p - init_vel_p;
+
+			virtual_transfer_orbit vto;
+			vto.init_orbit = _init_orbit;
+			vto.finish_orbit = transfer;
+			vto.impulse = (_init_orbit.apocenter < _target_orbit.apocenter) ?impulse : (-1)*impulse;
+			vto.type =(_init_orbit.apocenter < _target_orbit.apocenter)? virtual_maneuver_elleptic_apocenter_raise : virtual_maneuver_elleptic_apocenter_descend;
+			vto.imp_true_anomaly = 0; // прикладываем импульс в перицентре
+
+			_transfer_orbits.push_back(vto);
+		}
+
+		void from_elleptic_pericenter_change(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			//assert( _target_orbit.apocenter > _init_orbit.pericenter);
+			//assert( _targer_orbit.pericenter < _init_orbit.apocenter);
+
+			double init_vel_p = apocenter_velocity(_init_orbit); // скорость в перицентре начальной орбиты
+
+			kepler_orbit transfer;
+			transfer.pericenter = _target_orbit.pericenter;
+			transfer.apocenter = _init_orbit.apocenter;
+			transfer.eccentricity = calc_eccentricity(transfer.pericenter, transfer.apocenter);
+			transfer.focal = calc_focal(transfer.pericenter, transfer.apocenter);
+			transfer.pericenter_angle = _init_orbit.pericenter_angle;
+
+			double transfer_vel_p = apocenter_velocity(transfer);
+
+			double impulse =  init_vel_p - transfer_vel_p;
+
+			virtual_transfer_orbit vto;
+			vto.init_orbit = _init_orbit;
+			vto.finish_orbit = transfer;
+			vto.impulse = (_init_orbit.pericenter < _target_orbit.pericenter) ?impulse : (-1)*impulse;
+			vto.type =(_init_orbit.pericenter < _target_orbit.pericenter)? virtual_maneuver_elleptic_pericenter_raise : virtual_maneuver_elleptic_pericenter_descend;
+			vto.imp_true_anomaly = PiConst; // прикладываем импульс в перицентре
+
+			_transfer_orbits.push_back(vto);
+		}
 
 	};
 
