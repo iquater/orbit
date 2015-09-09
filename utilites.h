@@ -77,75 +77,60 @@ namespace utilites
 	enum virtual_maneuver_type
 	{
 		virtual_maneuver_unknown = 0,
-		virtual_maneuver_circle_to_elleptic_ep_ha = 1, // ep is equal pericenter, ha is higher apocenter
+		virtual_maneuver_circle_to_tangent_elleptic_raise = 1, // касающиеся орбиты
+		virtual_maneuver_circle_to_tangent_elleptic_descend = 2,// касающиеся орбиты
+
+		virtual_maneuver_elleptic_to_tangent_circle_raise = 3, // касающиеся орбиты
+		virtual_maneuver_elleptic_to_tangent_circle_descend = 4, // касающиеся орбиты
+
+		virtual_maneuver_circle_to_circle_raise_hohmann = 5,// с круговой на круговую
+		virtual_maneuver_circle_to_circle_descend_hohmann = 6,// с круговой на круговую
 	};
 
 	struct virtual_transfer_orbit
 	{
-		kepler_orbit orbit; //орбита, после приложения импульса
+		kepler_orbit init_orbit; // орбита, на которой прикладывается импульс
+		kepler_orbit finish_orbit; //орбита, после приложения импульса
 		double impulse;
+		double imp_true_anomaly; // точка приложения импульса, на начальной орбите
 		virtual_maneuver_type type;
-
-		/*kepler_orbit transfer_orbit; //трансферная орбита ( либо конечная)
-		double begin_anomaly; // точка приложения импульса на начальной орбите
-		double end_anomaly; // точка, соответствующая концу трансферной орбиты ( если равна нулю, значит transfer_orbit конечная орбита)*/
 	};
 
 
 	/**
 	 * @brief структура описывает мгновенные импульсные маневры
 	 */
-	struct virtual_maneuver
+	struct maneuver_scheme
 	{
+		const kepler_orbit init_orbit;
+		const kepler_orbit target_orbit;
 		std::vector<virtual_transfer_orbit> transfer_orbits;
 		virtual_maneuver_type type;
 
-		virtual_maneuver(kepler_orbit & init_orbit, kepler_orbit & target_orbit)
+		maneuver_scheme(kepler_orbit & _init_orbit, kepler_orbit & _target_orbit):init_orbit(_init_orbit), target_orbit(_target_orbit)
 		{
 			if( init_orbit.eccentricity == 0 && init_orbit.pericenter ==  target_orbit.pericenter && init_orbit.apocenter < target_orbit.apocenter)
 			{
-				//пока предполагаем, что начальная и конечная орбиты имеют один и тот же аргумент перицентра
-				//момент приложения импульса для круговой орбиты можно вычислять из аргумента перицентра
-				double vc = circle_velocity(init_orbit); 
-				double vp = pericenter_velocity(target_orbit);
-
-				double impulse = vp - vc;
-
-				kepler_orbit transfer;
-				transfer.apocenter = target_orbit.apocenter;
-				transfer.pericenter = target_orbit.pericenter;
-				transfer.eccentricity = calc_eccentricity(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.focal =  calc_focal(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.pericenter_angle = target_orbit.pericenter_angle; 
-
-				virtual_transfer_orbit vto;
-				vto.orbit = transfer;
-				vto.impulse = impulse;
-				vto.type = virtual_maneuver_circle_to_elleptic_ep_ha;
-
-				transfer_orbits.push_back(vto);
+				from_circular_to_elleptic_r(init_orbit, target_orbit, transfer_orbits);
+				type = virtual_maneuver_circle_to_tangent_elleptic_raise;
 			}
+
 			else if( init_orbit.eccentricity == 0 && init_orbit.apocenter ==  target_orbit.apocenter && init_orbit.pericenter > target_orbit.pericenter)
 			{
-				//пока предполагаем, что начальная и конечная орбиты имеют один и тот же аргумент перицентра
-				double vc = circle_velocity(init_orbit); 
-				double va = apocenter_velocity(target_orbit);
+				from_circular_to_elleptic_d(init_orbit, target_orbit, transfer_orbits);
+				type = virtual_maneuver_circle_to_tangent_elleptic_descend;
+			}
 
-				double impulse = vc - va;
+			else if(init_orbit.eccentricity == 0 &&  target_orbit.eccentricity == 0 && init_orbit.pericenter < target_orbit.pericenter)
+			{
+				from_circle_to_circle_raise_hohmann(_init_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_circle_to_circle_raise_hohmann;
+			}
 
-				kepler_orbit transfer;
-				transfer.apocenter = target_orbit.apocenter;
-				transfer.pericenter = target_orbit.pericenter;
-				transfer.eccentricity = calc_eccentricity(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.focal =  calc_focal(target_orbit.pericenter, target_orbit.apocenter);
-				transfer.pericenter_angle = target_orbit.pericenter_angle;
-
-				virtual_transfer_orbit vto;
-				vto.orbit = transfer;
-				vto.impulse = (-1)*impulse;
-				vto.type = virtual_maneuver_circle_to_elleptic_ep_ha;
-
-				transfer_orbits.push_back(vto);
+			else if(init_orbit.eccentricity == 0 &&  target_orbit.eccentricity == 0 && init_orbit.pericenter > target_orbit.pericenter)
+			{
+				from_circle_to_circle_descend_hohmann(_init_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_circle_to_circle_descend_hohmann;
 			}
 		}
 
@@ -179,6 +164,138 @@ namespace utilites
 			double result = sqrt ( 2 * EarthGravy /( orbit.pericenter + orbit.apocenter) * orbit.pericenter / orbit.apocenter );
 			return result ;
 		}
+
+		/// с круговой на внешнюю эллиптическую орбиту
+		void from_circular_to_elleptic_r(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			assert(_init_orbit.eccentricity == 0);
+			assert(_init_orbit.pericenter ==  _target_orbit.pericenter);
+			assert(_init_orbit.apocenter < _target_orbit.apocenter);
+			assert(_target_orbit.pericenter_angle >= 0 );
+
+			double vc = circle_velocity(_init_orbit); 
+			double vp = pericenter_velocity(_target_orbit);
+
+			double impulse = vp - vc;
+
+			
+			virtual_transfer_orbit vto;
+			vto.init_orbit = _init_orbit;
+			vto.finish_orbit = _target_orbit;
+			vto.impulse = impulse;
+			vto.type = virtual_maneuver_circle_to_tangent_elleptic_raise;
+			vto.imp_true_anomaly = _target_orbit.pericenter_angle;
+
+			_transfer_orbits.push_back(vto);
+		}
+
+		/// с круговой на внутренюю эллиптическую орбиту
+		void from_circular_to_elleptic_d(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			assert(_init_orbit.eccentricity == 0);
+			assert(_init_orbit.apocenter == _target_orbit.apocenter);
+			assert(_init_orbit.pericenter > _target_orbit.pericenter);
+			assert(_target_orbit.pericenter_angle >= 0 );
+
+			double vc = circle_velocity(_init_orbit); 
+			double va = apocenter_velocity(_target_orbit);
+
+			double impulse = vc - va;
+
+			virtual_transfer_orbit vto;
+			vto.init_orbit = init_orbit;
+			vto.finish_orbit = _target_orbit;
+			vto.impulse = (-1)*impulse; // для понижения орбиты импульс направлен в сторону, противоположную движению
+			vto.imp_true_anomaly = (_target_orbit.pericenter_angle < PiConst) ? _target_orbit.pericenter_angle + PiConst : _target_orbit.pericenter_angle - PiConst;
+			vto.type = virtual_maneuver_circle_to_tangent_elleptic_descend;
+
+			transfer_orbits.push_back(vto);
+		}
+
+		void from_elleptic_to_circular_r(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			assert(_init_orbit.eccentricity != 0);
+			assert(_init_orbit.apocenter == _target_orbit.apocenter);
+			assert(_init_orbit.pericenter < _target_orbit.pericenter);
+			assert(_target_orbit.pericenter_angle >= 0 );
+
+			double va = apocenter_velocity(_init_orbit);
+			double vc = circle_velocity(_target_orbit); 
+
+			double impulse = vc - va;
+
+			virtual_transfer_orbit vto;
+			vto.init_orbit = init_orbit;
+			vto.finish_orbit = _target_orbit;
+			vto.impulse = impulse;
+			vto.type = virtual_maneuver_elleptic_to_tangent_circle_raise;
+			vto.imp_true_anomaly = PiConst; // прикладываем импульс в апоцентре
+
+			_transfer_orbits.push_back(vto);
+		}
+
+		void from_elleptic_to_circular_d(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			assert(_init_orbit.eccentricity != 0);
+			assert(_init_orbit.pericenter == _target_orbit.pericenter);
+			assert(_init_orbit.apocenter > _target_orbit.apocenter);
+			assert(_target_orbit.pericenter_angle >= 0 );
+
+			double vp = pericenter_velocity(_init_orbit);
+			double vc = circle_velocity(_target_orbit); 
+
+			double impulse = vc - vp;
+
+			virtual_transfer_orbit vto;
+			vto.init_orbit = _init_orbit;
+			vto.finish_orbit = _target_orbit;
+			vto.impulse = impulse;
+			vto.type = virtual_maneuver_elleptic_to_tangent_circle_descend;
+			vto.imp_true_anomaly = 0; // прикладываем импульс в перицентре
+
+			_transfer_orbits.push_back(vto);
+		}
+
+		void from_circle_to_circle_raise_hohmann(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			assert(_init_orbit.eccentricity == 0 && _target_orbit.eccentricity == 0);
+			assert(_init_orbit.apocenter < _target_orbit.apocenter && _init_orbit.pericenter < _target_orbit.pericenter);
+			assert(_target_orbit.pericenter_angle >= 0 );
+
+			kepler_orbit elleptic_transfer;// эллипс Гомана
+
+			elleptic_transfer.pericenter = _init_orbit.pericenter;
+			elleptic_transfer.apocenter = _target_orbit.apocenter;
+			elleptic_transfer.eccentricity = calc_eccentricity(elleptic_transfer.pericenter, elleptic_transfer.apocenter);
+			elleptic_transfer.focal = calc_focal(elleptic_transfer.pericenter, elleptic_transfer.apocenter);
+			elleptic_transfer.pericenter_angle = 0;
+			
+			from_circular_to_elleptic_r(_init_orbit, elleptic_transfer, _transfer_orbits);
+			assert(_transfer_orbits.size());
+			from_elleptic_to_circular_r(elleptic_transfer, _target_orbit, _transfer_orbits);
+
+		}
+
+		void from_circle_to_circle_descend_hohmann(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
+		{
+			assert(_init_orbit.eccentricity == 0 && _target_orbit.eccentricity == 0);
+			assert(_init_orbit.apocenter > _target_orbit.apocenter && _init_orbit.pericenter > _target_orbit.pericenter);
+			assert(_target_orbit.pericenter_angle >= 0 );
+
+			kepler_orbit elleptic_transfer;// эллипс Гомана
+
+			elleptic_transfer.pericenter = _target_orbit.pericenter;
+			elleptic_transfer.apocenter = _init_orbit.apocenter;
+			elleptic_transfer.eccentricity = calc_eccentricity(elleptic_transfer.pericenter, elleptic_transfer.apocenter);
+			elleptic_transfer.focal = calc_focal(elleptic_transfer.pericenter, elleptic_transfer.apocenter);
+			elleptic_transfer.pericenter_angle = 0;
+			
+			from_circular_to_elleptic_d(_init_orbit, elleptic_transfer, _transfer_orbits);
+			assert(_transfer_orbits.size());
+			from_elleptic_to_circular_d(elleptic_transfer, _target_orbit, _transfer_orbits);
+
+		}
+
 
 	};
 

@@ -16,13 +16,20 @@ int main ()
 	CEllepticalOrbit * low_orbit = new CEllepticalOrbit(EarthMass, 6400, 6600, 6600);
 
 	CEllepticalOrbit * gso_orbit = new CEllepticalOrbit(EarthMass, 6400, 6400+35786, 6400+35786);
-	double a = gso_orbit->GetOrbitPeriod();
+
+	kepler_orbit low = low_orbit->GetKeplerOrbitFormat();
+	kepler_orbit gso = gso_orbit->GetKeplerOrbitFormat();
+
+	maneuver_scheme scheme(low, gso);
+	maneuver_scheme scheme_rev(gso, low);
+
+	/*double a = gso_orbit->GetOrbitPeriod();
 
 	double t = orbit->GetOrbitPeriod();
 	double m = orbit->GetMeanVelocity();
 
 	CSetPericenter * apo = new CSetPericenter(7100, *orbit);
-	apo->GetTransferTrajectory(0, 7, 2.5, 0.01);
+	apo->GetTransferTrajectory(0, 7, 2.5, 0.01);*/
 
 
 	while(getchar()!='\n')
