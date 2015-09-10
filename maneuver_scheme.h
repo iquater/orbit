@@ -7,36 +7,36 @@ namespace utilites
 	enum virtual_maneuver_type
 	{
 		virtual_maneuver_unknown = 0,
-		virtual_maneuver_circle_to_tangent_elleptic_raise = 1, // компланарный, касающиеся орбиты
-		virtual_maneuver_circle_to_tangent_elleptic_descend = 2,// компланарный, касающиеся орбиты
+		virtual_maneuver_circle_to_tangent_elleptic_raise = 1, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РєР°СЃР°СЋС‰РёРµСЃСЏ РѕСЂР±РёС‚С‹
+		virtual_maneuver_circle_to_tangent_elleptic_descend = 2,// РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РєР°СЃР°СЋС‰РёРµСЃСЏ РѕСЂР±РёС‚С‹
 
-		virtual_maneuver_elleptic_to_tangent_circle_raise = 3, // компланарный, касающиеся орбиты
-		virtual_maneuver_elleptic_to_tangent_circle_descend = 4, // компланарный, касающиеся орбиты
+		virtual_maneuver_elleptic_to_tangent_circle_raise = 3, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РєР°СЃР°СЋС‰РёРµСЃСЏ РѕСЂР±РёС‚С‹
+		virtual_maneuver_elleptic_to_tangent_circle_descend = 4, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РєР°СЃР°СЋС‰РёРµСЃСЏ РѕСЂР±РёС‚С‹
 
-		virtual_maneuver_circle_to_circle_raise_hohmann = 5,// компланарный, с круговой на круговую
-		virtual_maneuver_circle_to_circle_descend_hohmann = 6,// компланарный, с круговой на круговую
+		virtual_maneuver_circle_to_circle_raise_hohmann = 5,// РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, СЃ РєСЂСѓРіРѕРІРѕР№ РЅР° РєСЂСѓРіРѕРІСѓСЋ
+		virtual_maneuver_circle_to_circle_descend_hohmann = 6,// РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, СЃ РєСЂСѓРіРѕРІРѕР№ РЅР° РєСЂСѓРіРѕРІСѓСЋ
 
-		virtual_maneuver_elleptic_apocenter_raise = 7, // компланарный, поднять апоцентр
-		virtual_maneuver_elleptic_apocenter_descend = 8, // компланарный, поднять апоцентр
+		virtual_maneuver_elleptic_apocenter_raise = 7, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РїРѕРґРЅСЏС‚СЊ Р°РїРѕС†РµРЅС‚СЂ
+		virtual_maneuver_elleptic_apocenter_descend = 8, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РїРѕРґРЅСЏС‚СЊ Р°РїРѕС†РµРЅС‚СЂ
 
-		virtual_maneuver_elleptic_pericenter_raise = 9, // компланарный, поднять перицентр
-		virtual_maneuver_elleptic_pericenter_descend = 10, // компланарный, поднять перицентр
+		virtual_maneuver_elleptic_pericenter_raise = 9, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РїРѕРґРЅСЏС‚СЊ РїРµСЂРёС†РµРЅС‚СЂ
+		virtual_maneuver_elleptic_pericenter_descend = 10, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РїРѕРґРЅСЏС‚СЊ РїРµСЂРёС†РµРЅС‚СЂ
 
-		virtual_maneuver_elleptic_to_cross_elleptic = 11, // компланарный, пересекающиеся орбиты
+		virtual_maneuver_elleptic_to_cross_elleptic = 11, // РєРѕРјРїР»Р°РЅР°СЂРЅС‹Р№, РїРµСЂРµСЃРµРєР°СЋС‰РёРµСЃСЏ РѕСЂР±РёС‚С‹
 	};
 
 	struct virtual_transfer_orbit
 	{
-		kepler_orbit init_orbit; // орбита, на которой прикладывается импульс
-		kepler_orbit finish_orbit; //орбита, после приложения импульса
+		kepler_orbit init_orbit; // РѕСЂР±РёС‚Р°, РЅР° РєРѕС‚РѕСЂРѕР№ РїСЂРёРєР»Р°РґС‹РІР°РµС‚СЃСЏ РёРјРїСѓР»СЊСЃ
+		kepler_orbit finish_orbit; //РѕСЂР±РёС‚Р°, РїРѕСЃР»Рµ РїСЂРёР»РѕР¶РµРЅРёСЏ РёРјРїСѓР»СЊСЃР°
 		double impulse;
-		double imp_true_anomaly; // точка приложения импульса, на начальной орбите
+		double imp_true_anomaly; // С‚РѕС‡РєР° РїСЂРёР»РѕР¶РµРЅРёСЏ РёРјРїСѓР»СЊСЃР°, РЅР° РЅР°С‡Р°Р»СЊРЅРѕР№ РѕСЂР±РёС‚Рµ
 		virtual_maneuver_type type;
 	};
 
-
+	
 	/**
-	 * @brief структура описывает мгновенные импульсные ПЛОСКИЕ маневры
+	 * @brief СЃС‚СЂСѓРєС‚СѓСЂР° РѕРїРёСЃС‹РІР°РµС‚ РјРіРЅРѕРІРµРЅРЅС‹Рµ РёРјРїСѓР»СЊСЃРЅС‹Рµ РџР›РћРЎРљРР• РјР°РЅРµРІСЂС‹
 	 */
 	struct maneuver_scheme
 	{
@@ -48,48 +48,48 @@ namespace utilites
 		maneuver_scheme(kepler_orbit & _init_orbit, kepler_orbit & _target_orbit);
 
 	private:
-		/// скорость круговой орбиты
+		/// СЃРєРѕСЂРѕСЃС‚СЊ РєСЂСѓРіРѕРІРѕР№ РѕСЂР±РёС‚С‹
 		static double circle_velocity(const kepler_orbit& orbit);
 
-		/// скорость в перицентре
+		/// СЃРєРѕСЂРѕСЃС‚СЊ РІ РїРµСЂРёС†РµРЅС‚СЂРµ
 		static double pericenter_velocity(const kepler_orbit& orbit);
 
-		/// скорость в апоцентре
+		/// СЃРєРѕСЂРѕСЃС‚СЊ РІ Р°РїРѕС†РµРЅС‚СЂРµ
 		static double apocenter_velocity(const kepler_orbit& orbit);
 
-		/// с круговой на внешнюю эллиптическую орбиту
+		/// СЃ РєСЂСѓРіРѕРІРѕР№ РЅР° РІРЅРµС€РЅСЋСЋ СЌР»Р»РёРїС‚РёС‡РµСЃРєСѓСЋ РѕСЂР±РёС‚Сѓ
 		static void from_circle_to_elleptic_r(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 
-		/// с круговой на внутренюю эллиптическую орбиту
+		/// СЃ РєСЂСѓРіРѕРІРѕР№ РЅР° РІРЅСѓС‚СЂРµРЅСЋСЋ СЌР»Р»РёРїС‚РёС‡РµСЃРєСѓСЋ РѕСЂР±РёС‚Сѓ
 		static void from_circle_to_elleptic_d(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 		
-		/// с эллептической на внешнюю круговую
+		/// СЃ СЌР»Р»РµРїС‚РёС‡РµСЃРєРѕР№ РЅР° РІРЅРµС€РЅСЋСЋ РєСЂСѓРіРѕРІСѓСЋ
 		static void from_elleptic_to_circle_r(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 		
-		/// с эллептической на внутреннюю круговую
+		/// СЃ СЌР»Р»РµРїС‚РёС‡РµСЃРєРѕР№ РЅР° РІРЅСѓС‚СЂРµРЅРЅСЋСЋ РєСЂСѓРіРѕРІСѓСЋ
 		static void from_elleptic_to_circle_d(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 
-		/// с круговой на внешнюю круговую (Гоманн)
+		/// СЃ РєСЂСѓРіРѕРІРѕР№ РЅР° РІРЅРµС€РЅСЋСЋ РєСЂСѓРіРѕРІСѓСЋ (Р“РѕРјР°РЅРЅ)
 		static void from_circle_to_circle_raise_hohmann(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 		
-		/// с круговой на внутреннюю круговую (Гоманн)
+		/// СЃ РєСЂСѓРіРѕРІРѕР№ РЅР° РІРЅСѓС‚СЂРµРЅРЅСЋСЋ РєСЂСѓРіРѕРІСѓСЋ (Р“РѕРјР°РЅРЅ)
 		static void from_circle_to_circle_descend_hohmann(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 
-		/// повысить или понизить апоцентр орбиты
+		/// РїРѕРІС‹СЃРёС‚СЊ РёР»Рё РїРѕРЅРёР·РёС‚СЊ Р°РїРѕС†РµРЅС‚СЂ РѕСЂР±РёС‚С‹
 		static void from_elleptic_apocenter_change(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 		
-		/// повысить или понизить перицентр орбиты
+		/// РїРѕРІС‹СЃРёС‚СЊ РёР»Рё РїРѕРЅРёР·РёС‚СЊ РїРµСЂРёС†РµРЅС‚СЂ РѕСЂР±РёС‚С‹
 		static void from_elleptic_pericenter_change(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
-		//с эллептической на эллиптическую по окружности
+		//СЃ СЌР»Р»РµРїС‚РёС‡РµСЃРєРѕР№ РЅР° СЌР»Р»РёРїС‚РёС‡РµСЃРєСѓСЋ РїРѕ РѕРєСЂСѓР¶РЅРѕСЃС‚Рё
 		void from_elleptic_to_elleptic_circle_transfer(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 	public:
-		/// изменить апоцентр орбиты
+		/// РёР·РјРµРЅРёС‚СЊ Р°РїРѕС†РµРЅС‚СЂ РѕСЂР±РёС‚С‹
 		static void change_apocenter(const kepler_orbit & _init_orbit, double new_apocenter, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 		
-		/// изменить перицентр орбиты
+		/// РёР·РјРµРЅРёС‚СЊ РїРµСЂРёС†РµРЅС‚СЂ РѕСЂР±РёС‚С‹
 		static void change_pericenter(const kepler_orbit & _init_orbit, double new_pericneter, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 		
-		/// изменить аргумент перицентра орбиты
+		/// РёР·РјРµРЅРёС‚СЊ Р°СЂРіСѓРјРµРЅС‚ РїРµСЂРёС†РµРЅС‚СЂР° РѕСЂР±РёС‚С‹
 		static void change_pericenter_argument(const kepler_orbit & _init_orbit, double new_pericneter, std::vector<virtual_transfer_orbit>& _transfer_orbits);
 	};
 
