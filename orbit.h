@@ -22,6 +22,14 @@ struct kepler_orbit
 		focal(0),
 		pericenter_angle(0),
 		true_anomaly(0) {}
+
+	bool operator == (kepler_orbit const & orbit) const
+	{
+		return this->pericenter == orbit.pericenter && this->apocenter == orbit.apocenter 
+			&& this->eccentricity == orbit.eccentricity && this->focal == orbit.focal 
+			&& this->pericenter_angle == orbit.pericenter_angle;
+	}
+
 };
 
 typedef std::vector<kepler_orbit> history_t;
