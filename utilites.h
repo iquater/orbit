@@ -110,7 +110,7 @@ namespace utilites
 
 
 	/**
-	 * @brief структура описывает мгновенные импульсные плоские маневры
+	 * @brief структура описывает мгновенные импульсные ПЛОСКИЕ маневры
 	 */
 	struct maneuver_scheme
 	{
@@ -122,10 +122,13 @@ namespace utilites
 		maneuver_scheme(kepler_orbit & _init_orbit, kepler_orbit & _target_orbit);
 
 	private:
+		/// скорость круговой орбиты
 		static double circle_velocity(const kepler_orbit& orbit);
 
+		/// скорость в перицентре
 		static double pericenter_velocity(const kepler_orbit& orbit);
 
+		/// скорость в апоцентре
 		static double apocenter_velocity(const kepler_orbit& orbit);
 
 		/// с круговой на внешнюю эллиптическую орбиту
