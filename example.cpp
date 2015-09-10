@@ -20,8 +20,11 @@ int main ()
 	kepler_orbit low = low_orbit->GetKeplerOrbitFormat();
 	kepler_orbit gso = gso_orbit->GetKeplerOrbitFormat();
 
-	maneuver_scheme scheme(low, gso);
-	maneuver_scheme scheme_rev(gso, low);
+//	maneuver_scheme scheme(low, gso);
+//	maneuver_scheme scheme_rev(gso, low);
+
+	std::vector<utilites::virtual_transfer_orbit> _transfers;
+	maneuver_scheme::change_apocenter(low, 6500 * 1000, _transfers);
 
 	/*double a = gso_orbit->GetOrbitPeriod();
 
