@@ -4,7 +4,7 @@
 
 TEMPLATE = app
 INCLUDEPATH += .
-QT += core widgets
+QT += core gui widgets
 
 # Input
 HEADERS += body.h \
@@ -14,8 +14,10 @@ HEADERS += body.h \
            maneuver_scheme.h \
            orbit.h \
            utilites.h \
+           orbit_wdg.h \
 
 FORMS += orbit_wdg.ui\
+         untitled.ui \
 
 SOURCES += body.cpp \
            example.cpp \
