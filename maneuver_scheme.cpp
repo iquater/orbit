@@ -348,20 +348,38 @@ namespace utilites
 
 	void maneuver_scheme::change_apocenter(const kepler_orbit & _init_orbit, double new_apocenter, std::vector<virtual_transfer_orbit>& _transfer_orbits)
 	{
+		//assert(new_apocenter >= _init_orbit.pericenter);
 		kepler_orbit new_orbit;
-		new_orbit.apocenter = new_apocenter;
+		new_orbit.apocenter = new_apocenter ;
 		new_orbit.pericenter = _init_orbit.pericenter;
 		new_orbit.eccentricity = calc_eccentricity(new_orbit);
 		new_orbit.focal = calc_focal(new_orbit);
 		new_orbit.pericenter_angle = _init_orbit.pericenter_angle;
 
-		from_elleptic_apocenter_change(_init_orbit, new_orbit, _transfer_orbits);
-		
+		double init_vel_p = pericenter_velocity(_init_orbit);
+		double target_vel_p = pericenter_velocity(new_orbit);
+		double impulse = target_vel_p - init_vel_p;
+
+		if (new_apocenter < _init_orbit.pericenter) // если апоцентр стал меньше перицентра - перевернули орбиту
+		{ 
+			new_orbit.apocenter = _init_orbit.pericenter;
+			new_orbit.pericenter = new_apocenter;
+			new_orbit.pericenter_angle = _init_orbit.pericenter_angle + PiConst;
+		}
+
+		virtual_transfer_orbit vto;
+		vto.finish_orbit = new_orbit;
+		vto.impulse = impulse;
+		vto.imp_true_anomaly = 0;
+		vto.init_orbit = _init_orbit;
+		vto.type = (impulse > 0) ? virtual_maneuver_elleptic_apocenter_raise : virtual_maneuver_elleptic_apocenter_descend;
+		_transfer_orbits.push_back(vto);
 	}
 
 
 	void maneuver_scheme::change_pericenter(const kepler_orbit & _init_orbit, double new_pericneter, std::vector<virtual_transfer_orbit>& _transfer_orbits)
 	{
+		//assert(_init_orbit.apocenter >= new_pericneter);
 		kepler_orbit new_orbit;
 		new_orbit.apocenter = _init_orbit.apocenter;
 		new_orbit.pericenter =new_pericneter;
@@ -369,7 +387,23 @@ namespace utilites
 		new_orbit.focal = calc_focal(new_orbit);
 		new_orbit.pericenter_angle = _init_orbit.pericenter_angle;
 
-		from_elleptic_pericenter_change(_init_orbit, new_orbit, _transfer_orbits);
+		double init_vel_a = apocenter_velocity(_init_orbit);
+		double target_vel_a = apocenter_velocity(new_orbit);
+		double impulse = target_vel_a - init_vel_a;
+
+		if (new_pericneter > _init_orbit.apocenter) // если перицентр стал больше апоцентра - перевернули орбиту
+		{
+			new_orbit.pericenter = _init_orbit.apocenter;
+			new_orbit.apocenter = new_pericneter;
+			new_orbit.pericenter_angle = _init_orbit.pericenter_angle + PiConst;
+		}
+		virtual_transfer_orbit vto;
+		vto.finish_orbit = new_orbit;
+		vto.impulse = impulse;
+		vto.imp_true_anomaly = 0;
+		vto.init_orbit = _init_orbit;
+		vto.type = (impulse > 0) ? virtual_maneuver_elleptic_pericenter_raise : virtual_maneuver_elleptic_pericenter_descend;
+		_transfer_orbits.push_back(vto);
 	}
 
 	void maneuver_scheme::change_pericenter_argument(const kepler_orbit & _init_orbit, double new_pericneter_ang, std::vector<virtual_transfer_orbit>& _transfer_orbits)
