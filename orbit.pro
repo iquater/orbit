@@ -17,7 +17,6 @@ HEADERS += body.h \
            orbit_wdg.h \
 
 FORMS += orbit_wdg.ui\
-         untitled.ui \
 
 SOURCES += body.cpp \
            example.cpp \

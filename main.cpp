@@ -1,7 +1,6 @@
 #include <QtGui>
 #include <qapplication.h>
 #include "orbit_wdg.h"
-#include "ui_untitled.h"
 // Include header files for application components.
 // ...
 
