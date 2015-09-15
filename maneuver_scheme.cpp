@@ -4,7 +4,76 @@ namespace utilites
 {
 	maneuver_scheme::maneuver_scheme(kepler_orbit & _init_orbit, kepler_orbit & _target_orbit):init_orbit(_init_orbit), target_orbit(_target_orbit)
 	{
-		if( init_orbit.eccentricity == 0 && init_orbit.pericenter ==  target_orbit.pericenter && init_orbit.apocenter < target_orbit.apocenter)
+		if (_init_orbit.eccentricity == 0)
+		{
+			if(_init_orbit.pericenter > _target_orbit.pericenter && _init_orbit.apocenter > _target_orbit.apocenter)
+			{
+				assert (_target_orbit.pericenter <= target_orbit.apocenter);
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				from_elleptic_pericenter_change(transfer_orbits.at(0).finish_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if (_init_orbit.pericenter > _target_orbit.pericenter && _init_orbit.apocenter < _target_orbit.apocenter)
+			{
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				from_elleptic_pericenter_change(transfer_orbits.at(0).finish_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if (_init_orbit.pericenter < _target_orbit.pericenter && _init_orbit.apocenter < _target_orbit.apocenter)
+			{
+				assert (_target_orbit.pericenter <= target_orbit.apocenter);
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				from_elleptic_pericenter_change(transfer_orbits.at(0).finish_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if (_init_orbit.pericenter == _target_orbit.pericenter && _init_orbit.apocenter < _target_orbit.apocenter)
+			{
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if (_init_orbit.pericenter > _target_orbit.pericenter && _init_orbit.apocenter == _target_orbit.apocenter)
+			{
+				from_elleptic_pericenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+		}
+		else if (_target_orbit.eccentricity == 0)
+		{
+			if(_init_orbit.pericenter > _target_orbit.pericenter && _init_orbit.apocenter > _target_orbit.apocenter)
+			{
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				from_elleptic_pericenter_change(transfer_orbits.at(0).finish_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if(_init_orbit.pericenter < _target_orbit.pericenter && _init_orbit.apocenter > _target_orbit.apocenter)
+			{
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				from_elleptic_pericenter_change(transfer_orbits.at(0).finish_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if(_init_orbit.pericenter == _target_orbit.pericenter && _init_orbit.apocenter > _target_orbit.apocenter)
+			{
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if(_init_orbit.pericenter < _target_orbit.pericenter && _init_orbit.apocenter < _target_orbit.apocenter)
+			{
+				from_elleptic_apocenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				from_elleptic_pericenter_change(transfer_orbits.at(0).finish_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+			else if(_init_orbit.pericenter < _target_orbit.pericenter && _init_orbit.apocenter == _target_orbit.apocenter)
+			{
+				from_elleptic_pericenter_change(_init_orbit, _target_orbit, transfer_orbits);
+				type = virtual_maneuver_unknown;
+			}
+		}
+		else 
+		{
+
+		}
+
+		/*if( init_orbit.eccentricity == 0 && init_orbit.pericenter ==  target_orbit.pericenter && init_orbit.apocenter < target_orbit.apocenter)
 		{
 			from_circle_to_elleptic_r(init_orbit, target_orbit, transfer_orbits);
 			type = virtual_maneuver_circle_to_tangent_elleptic_raise;
@@ -26,7 +95,9 @@ namespace utilites
 		{
 			from_circle_to_circle_descend_hohmann(_init_orbit, _target_orbit, transfer_orbits);
 			type = virtual_maneuver_circle_to_circle_descend_hohmann;
-		}
+		}*/
+
+
 	}
 	
 	double maneuver_scheme::circle_velocity(const kepler_orbit& orbit)
@@ -61,7 +132,7 @@ namespace utilites
 	void maneuver_scheme::from_circle_to_elleptic_r(const kepler_orbit & _init_orbit, const kepler_orbit & _target_orbit, std::vector<virtual_transfer_orbit>& _transfer_orbits)
 	{
 		assert(_init_orbit.eccentricity == 0);
-		assert(_init_orbit.pericenter ==  _target_orbit.pericenter);
+		assert(_init_orbit.pericenter <=  _target_orbit.pericenter);
 		assert(_init_orbit.apocenter < _target_orbit.apocenter);
 		assert(_target_orbit.pericenter_angle >= 0 );
 
@@ -196,8 +267,8 @@ namespace utilites
 		double init_vel_p = pericenter_velocity(_init_orbit); // скорость в перицентре начальной орбиты
 
 		kepler_orbit transfer;
-		transfer.pericenter = _init_orbit.pericenter;
-		transfer.apocenter = _target_orbit.apocenter;
+		transfer.pericenter =( _init_orbit.pericenter > _target_orbit.apocenter ? _target_orbit.apocenter : _init_orbit.pericenter);
+		transfer.apocenter = ( _init_orbit.pericenter > _target_orbit.apocenter ?_init_orbit.pericenter: _target_orbit.apocenter );
 		transfer.eccentricity = calc_eccentricity(transfer.pericenter, transfer.apocenter);
 		transfer.focal = calc_focal(transfer.pericenter, transfer.apocenter);
 		transfer.pericenter_angle = _init_orbit.pericenter_angle;
@@ -224,15 +295,15 @@ namespace utilites
 		double init_vel_p = apocenter_velocity(_init_orbit); // скорость в перицентре начальной орбиты
 
 		kepler_orbit transfer;
-		transfer.pericenter = _target_orbit.pericenter;
-		transfer.apocenter = _init_orbit.apocenter;
+		transfer.pericenter = ( _target_orbit.pericenter > _init_orbit.apocenter ?_init_orbit.apocenter: _target_orbit.pericenter);
+		transfer.apocenter = ( _target_orbit.pericenter > _init_orbit.apocenter ? _target_orbit.pericenter: _init_orbit.apocenter);
 		transfer.eccentricity = calc_eccentricity(transfer.pericenter, transfer.apocenter);
 		transfer.focal = calc_focal(transfer.pericenter, transfer.apocenter);
 		transfer.pericenter_angle = _init_orbit.pericenter_angle;
 
 		double transfer_vel_p = apocenter_velocity(transfer);
 
-		double impulse =  init_vel_p - transfer_vel_p;
+		double impulse =  transfer_vel_p - init_vel_p;
 
 		virtual_transfer_orbit vto;
 		vto.init_orbit = _init_orbit;

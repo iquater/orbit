@@ -23,6 +23,7 @@ namespace utilites
 		virtual_maneuver_elleptic_pericenter_descend = 10, // компланарный, поднять перицентр
 
 		virtual_maneuver_elleptic_to_cross_elleptic = 11, // компланарный, пересекающиеся орбиты
+		virtual_maneuver_elleptic_to_elleptic_circle = 12, // компланарный, c эллиптической на эллиптическую по круговой
 	};
 
 	struct virtual_transfer_orbit
