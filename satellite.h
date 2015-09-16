@@ -50,10 +50,14 @@ class CDefaultSatellite: public ISatellite
 	CEllepticalOrbit m_orbit;
 	int m_control_law;
 
-	typedef double (t_eng_law)(double anomaly);
+	
 
-	map< int, t_eng_law > engine_laws;
-
+	enum type_eng_law
+	{
+		type_eng_const_periarg = 0,
+		type_eng_only_radial,
+		type_eng_only_transversal,
+	};
 	/// двигатель направлен так, чтобы аргумент перицентра сохранялся неизменным
 	double eng_law_const_periarg( double anomaly)
 	{
@@ -71,10 +75,16 @@ class CDefaultSatellite: public ISatellite
 		return PiConst / 2;
 	}
 
+	typedef double (CDefaultSatellite::*t_eng_law)(double anomaly);
+	map< int, t_eng_law > engine_laws;
+
 public :
 	CDefaultSatellite(const CEllepticalOrbit& _orbit):m_mass(500.0), m_engine_acc(2.0), m_orbit(_orbit)
 	{
-
+		//t_eng_law law = eng_law_const_periarg;
+		engine_laws[0] = eng_law_const_periarg;
+		engine_laws[1] = eng_law_only_radial;
+		engine_laws[2] = eng_law_only_transversal;
 	}
 
 	double GetMass() { return m_mass;}
@@ -84,16 +94,25 @@ public :
 	/// получить компоненты ускорения двигателя в заданной точке орбиты
 	AccelerationComponent GetAccelerationComponent(double true_anomaly)
 	{
-
+		t_eng_law law = engine_laws[m_control_law];
+		//(*law)(true_anomaly);
 	}
 
 
 	/// сменить закон управления двигателем
 	/// параметр law по сути представляет номер закона управления,
 	/// который определяется пользователем класса
-	void SwitchControlLaw(int law);
+	void SwitchControlLaw(int law)
+	{
+		m_control_law = law;
+	}
 
-	int GetControlLaw() const;
+
+	int GetControlLaw() const
+	{
+		return m_control_law;
+	}
+
 
 
 };
