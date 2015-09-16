@@ -15,6 +15,7 @@ HEADERS += body.h \
            orbit.h \
            utilites.h \
            orbit_wdg.h \
+           satellite.h \
 
 FORMS += orbit_wdg.ui\
 
