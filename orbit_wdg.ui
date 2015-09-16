@@ -380,14 +380,25 @@
     <widget class="QTextEdit" name="textEdit"/>
    </item>
    <item>
-    <widget class="QPushButton" name="pushButton">
-     <property name="enabled">
-      <bool>true</bool>
-     </property>
-     <property name="text">
-      <string>PushButton</string>
-     </property>
-    </widget>
+    <layout class="QHBoxLayout" name="horizontalLayout_6">
+     <item>
+      <widget class="QPushButton" name="pushButton">
+       <property name="enabled">
+        <bool>true</bool>
+       </property>
+       <property name="text">
+        <string>Схема перелета</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QPushButton" name="pushButton_2">
+       <property name="text">
+        <string>Моделировать</string>
+       </property>
+      </widget>
+     </item>
+    </layout>
    </item>
   </layout>
  </widget>
